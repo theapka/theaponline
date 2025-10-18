@@ -18,6 +18,13 @@
         body {
             font-family: 'Kantumruy Pro', sans-serif;
             scroll-behavior: smooth;
+            /* Add padding to the bottom to avoid content being hidden by the mobile nav */
+            padding-bottom: 70px; /* Adjust if nav height changes */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            body {
+                padding-bottom: 0;
+            }
         }
         /* Style for smooth transitions */
         .page {
@@ -83,6 +90,43 @@
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
+        /* Active state for mobile nav */
+        .mobile-nav-item.active {
+            color: #ec4899; /* pink-500 */
+        }
+        
+        /* Animated Logo */
+        @keyframes rotate-ring1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-2px, 2px) rotate(-10deg); }
+        }
+        @keyframes rotate-ring2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(2px, -2px) rotate(10deg); }
+        }
+        #animated-logo .ring1 {
+            transform-origin: 35px 50px;
+            animation: rotate-ring1 5s ease-in-out infinite;
+        }
+        #animated-logo .ring2 {
+            transform-origin: 65px 50px;
+            animation: rotate-ring2 5s ease-in-out infinite;
+        }
+
+        /* Animated Gallery Logo */
+        @keyframes pulse-glow {
+            0%, 100% {
+                filter: drop-shadow(0 0 2px #f472b6);
+                transform: scale(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 8px #f472b6);
+                transform: scale(1.05);
+            }
+        }
+        #gallery-logo {
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
 
     </style>
     <script>
@@ -94,53 +138,68 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
 
-    <header class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50">
+    <header class="bg-white dark:bg-gray-800/80 backdrop-blur-sm shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-pink-500" data-page="home" data-lang-key="nav_brand">ធៀប អនឡាញ</a>
+            <a href="#" class="flex items-center gap-2 text-2xl font-bold text-pink-500" data-page="home">
+                <svg id="animated-logo" class="w-8 h-8" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="35" cy="50" r="15" stroke-width="8" stroke="#f472b6" fill="none" class="ring1"/>
+                    <circle cx="65" cy="50" r="15" stroke-width="8" stroke="#c084fc" fill="none" class="ring2"/>
+                </svg>
+                <span data-lang-key="nav_brand">ធៀប អនឡាញ</span>
+            </a>
+            
+            <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center space-x-6">
                 <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="home" data-lang-key="nav_home">ទំព័រដើម</a>
                 <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="features" data-lang-key="nav_features">មុខងារ</a>
-                <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="pricing" data-lang-key="nav_pricing">តម្លៃ</a>
                 <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="gallery" data-lang-key="nav_templates">គំរូធៀប</a>
                 <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="contact" data-lang-key="nav_contact">ទាក់ទងយើង</a>
-                <a href="theapka.html" class="text-gray-600 dark:text-gray-300 hover:text-pink-500 hidden" id="my-card-link" data-lang-key="nav_my_card">ធៀបរបស់ខ្ញុំ</a>
             </nav>
-            <div class="flex items-center space-x-4">
-                <button id="lang-toggle" class="text-gray-600 dark:text-gray-300 hover:text-pink-500">
-                    <i class="fas fa-globe"></i> <span id="lang-text">EN</span>
-                </button>
-                <button id="theme-toggle" class="text-gray-600 dark:text-gray-300 hover:text-pink-500">
-                    <i class="fas fa-sun" id="sun-icon"></i>
-                    <i class="fas fa-moon hidden" id="moon-icon"></i>
-                </button>
-                <!-- Auth buttons container -->
-                <div id="auth-buttons-desktop" class="hidden md:block">
-                     <button class="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600" data-page="register" data-lang-key="create_card_btn">បង្កើតគណនី</button>
-                </div>
-                 <div id="user-actions-desktop" class="hidden md:flex items-center space-x-4">
-                    <a href="theapka.html" class="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600" data-lang-key="create_card_now_btn"></a>
-                    <button id="logout-btn-desktop" class="text-gray-600 dark:text-gray-300 hover:text-pink-500" data-lang-key="logout_btn">ចាកចេញ</button>
-                </div>
 
-                <button class="md:hidden" id="mobile-menu-button">
-                     <i class="fas fa-bars text-xl"></i>
-                </button>
-            </div>
-        </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 px-6 pb-4">
-            <a href="#" class="block py-2 text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="home" data-lang-key="nav_home">ទំព័រដើម</a>
-            <a href="#" class="block py-2 text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="features" data-lang-key="nav_features">មុខងារ</a>
-            <a href="#" class="block py-2 text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="pricing" data-lang-key="nav_pricing">តម្លៃ</a>
-            <a href="#" class="block py-2 text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="gallery" data-lang-key="nav_templates">គំរូធៀប</a>
-            <a href="#" class="block py-2 text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="contact" data-lang-key="nav_contact">ទាក់ទងយើង</a>
-            <a href="theapka.html" class="block py-2 text-gray-600 dark:text-gray-300 hover:text-pink-500 hidden" id="mobile-my-card-link" data-lang-key="nav_my_card">ធៀបរបស់ខ្ញុំ</a>
-             <!-- Auth buttons mobile -->
-            <div id="auth-buttons-mobile">
-                <button class="w-full mt-4 bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600" data-page="register" data-lang-key="create_card_btn">បង្កើតគណនី</button>
-            </div>
-            <div id="user-actions-mobile" class="hidden">
-                 <a href="theapka.html" class="w-full mt-2 bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600 text-center block" data-lang-key="create_card_now_btn"></a>
-                 <button id="logout-btn-mobile" class="w-full mt-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-full" data-lang-key="logout_btn">ចាកចេញ</button>
+            <div class="flex items-center space-x-4">
+                <!-- Auth Container for both mobile and desktop -->
+                <div id="auth-container">
+                    <!-- Logged Out State -->
+                    <div id="auth-buttons">
+                         <button class="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600 font-semibold" data-page="login" data-lang-key="login_title">ចូលគណនី</button>
+                    </div>
+                     <!-- Logged In State -->
+                    <div id="user-profile-container" class="relative hidden">
+                        <button id="profile-button" class="focus:outline-none transition transform hover:scale-110">
+                            <img id="profile-avatar" src="https://placehold.co/32x32/f472b6/ffffff?text=U" alt="User Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-pink-200 dark:ring-pink-700">
+                        </button>
+                        <div id="profile-dropdown" class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 hidden">
+                            <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-600">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white" id="profile-name">User Name</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 truncate" id="profile-email">user@example.com</p>
+                            </div>
+                            <a href="my-cards.html" class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-layer-group fa-fw mr-2 text-gray-400"></i>
+                                <span data-lang-key="my_cards_link">ធៀបរបស់ខ្ញុំ</span>
+                            </a>
+                             <a href="theapka.html" class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-edit fa-fw mr-2 text-gray-400"></i>
+                                <span data-lang-key="edit_card_link">កែសម្រួលធៀប</span>
+                            </a>
+                            <div class="border-t border-gray-200 dark:border-gray-600 my-1"></div>
+                            <!-- Settings moved inside dropdown -->
+                            <button id="theme-toggle" class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-sun fa-fw mr-2 text-gray-400" id="sun-icon"></i>
+                                <i class="fas fa-moon fa-fw mr-2 text-gray-400 hidden" id="moon-icon"></i>
+                                <span data-lang-key="theme_toggle_text">ប្តូរការបង្ហាញ</span>
+                            </button>
+                            <button id="lang-toggle" class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-globe fa-fw mr-2 text-gray-400"></i>
+                                <span id="lang-text">ប្តូរទៅ EN</span>
+                            </button>
+                            <div class="border-t border-gray-200 dark:border-gray-600 my-1"></div>
+                            <button id="logout-btn" class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-sign-out-alt fa-fw mr-2 text-gray-400"></i>
+                                <span data-lang-key="logout_btn">ចាកចេញ</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -151,9 +210,11 @@
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="text-center md:text-left">
                     <span class="text-pink-500 font-semibold" data-lang-key="hero_tagline">ធៀប អនឡាញ - អ្នកបង្កើតធៀបការ</span>
-                    <h1 class="text-4xl md:text-5xl font-bold my-4 animated-gradient-text" data-lang-key="hero_title"></h1>
-                    <p class="mb-6 text-gray-600 dark:text-gray-400" data-lang-key="hero_subtitle">បង្កើតและរៀបចំកាតអញ្ជើញឌីជីថល គ្រប់គ្រងបញ្ជីភ្ញៀវ และចែករំលែករឿងរ៉ាវស្នេហារបស់អ្នកបានយ៉ាងងាយស្រួល។</p>
-                    <button class="bg-pink-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-pink-600 transform hover:scale-105 transition duration-300" data-page="register" data-lang-key="hero_cta">ចាប់ផ្តើមឥឡូវនេះ</button>
+                    <h1 class="text-3xl md:text-4xl font-bold my-4 animated-gradient-text" data-lang-key="hero_title"></h1>
+                    <p class="mb-6 text-gray-600 dark:text-gray-400" data-lang-key="hero_subtitle">បង្កើតនិងរៀបចំធៀបការឌីជីថល គ្រប់គ្រងបញ្ជីភ្ញៀវ និងចែករំលែករឿងរ៉ាវស្នេហារបស់អ្នកបានយ៉ាងងាយស្រួល។</p>
+                    <button id="hero-cta-btn" class="bg-pink-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-pink-600 transform hover:scale-105 transition duration-300" data-page="register" data-lang-key="hero_cta">ចាប់ផ្តើមឥឡូវនេះ</button>
+                    <a href="theapka.html" id="create-card-now-btn" class="hidden bg-pink-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-pink-600 transform hover:scale-105 transition duration-300" data-lang-key="create_card_now_btn">បង្កើតធៀបឥឡូវនេះ</a>
+
                     <div class="mt-10 flex justify-center md:justify-start space-x-8 text-center">
                         <div>
                             <p class="text-2xl font-bold dark:text-white" data-lang-key="stat_1_val">២០០០+</p>
@@ -213,43 +274,14 @@
                  </div>
              </div>
         </section>
-        <section id="pricing" class="page">
-            <h2 class="text-3xl font-bold text-center mb-10" data-lang-key="pricing_title">ជ្រើសរើសកញ្ចប់របស់អ្នក</h2>
-             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                 <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg text-center border-2 border-transparent">
-                     <h3 class="text-2xl font-semibold mb-2" data-lang-key="price_free_title">ឥតគិតថ្លៃ</h3>
-                     <p class="text-4xl font-bold my-4 dark:text-white">$0</p>
-                     <ul class="text-left space-y-2 text-gray-600 dark:text-gray-400 my-6">
-                         <li><i class="fas fa-check text-green-500 mr-2"></i><span data-lang-key="price_feature_1">គំរូកាតមូលដ្ឋាន</span></li>
-                         <li><i class="fas fa-check text-green-500 mr-2"></i><span data-lang-key="price_feature_2">ភ្ញៀវ 50 នាក់</span></li>
-                     </ul>
-                     <button class="w-full mt-6 bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-6 py-3 rounded-full font-semibold" data-page="login" data-lang-key="price_choose_plan">ជ្រើសរើស</button>
-                 </div>
-                 <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-2xl text-center border-2 border-pink-500 relative">
-                     <span class="absolute top-0 -translate-y-1/2 bg-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full" data-lang-key="price_popular">ពេញនិយម</span>
-                     <h3 class="text-2xl font-semibold mb-2" data-lang-key="price_premium_title">បុព្វលាភ</h3>
-                     <p class="text-4xl font-bold my-4 text-pink-500">$10</p>
-                     <ul class="text-left space-y-2 text-gray-600 dark:text-gray-400 my-6">
-                        <li><i class="fas fa-check text-green-500 mr-2"></i><span data-lang-key="price_feature_3">គំរូកាតទាំងអស់</span></li>
-                        <li><i class="fas fa-check text-green-500 mr-2"></i><span data-lang-key="price_feature_4">ភ្ញៀវគ្មានដែនកំណត់</span></li>
-                        <li><i class="fas fa-check text-green-500 mr-2"></i><span data-lang-key="price_feature_5">គ្មានការផ្សាយពាណិជ្ជកម្ម</span></li>
-                     </ul>
-                     <button class="w-full mt-6 bg-pink-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-pink-600" data-page="login" data-lang-key="price_choose_plan">ជ្រើសរើស</button>
-                 </div>
-                  <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg text-center border-2 border-transparent">
-                     <h3 class="text-2xl font-semibold mb-2" data-lang-key="price_pro_title">អាជីវកម្ម</h3>
-                      <p class="text-4xl font-bold my-4 dark:text-white">$25</p>
-                     <ul class="text-left space-y-2 text-gray-600 dark:text-gray-400 my-6">
-                         <li><i class="fas fa-check text-green-500 mr-2"></i><span data-lang-key="price_feature_6">គ្រប់យ៉ាងក្នុង Premium</span></li>
-                         <li><i class="fas fa-check text-green-500 mr-2"></i><span data-lang-key="price_feature_7">ដែនផ្ទាល់ខ្លួន</span></li>
-                         <li><i class="fas fa-check text-green-500 mr-2"></i><span data-lang-key="price_feature_8">ការគាំទ្រអាទិភាព</span></li>
-                     </ul>
-                     <button class="w-full mt-6 bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-6 py-3 rounded-full font-semibold" data-page="login" data-lang-key="price_choose_plan">ជ្រើសរើស</button>
-                 </div>
-             </div>
-        </section>
+
         <section id="gallery" class="page">
-            <h2 class="text-3xl font-bold text-center mb-10" data-lang-key="templates_title">គំរូធៀបអញ្ជើញ</h2>
+            <div class="flex justify-center items-center gap-4 mb-10">
+                <svg id="gallery-logo" class="w-10 h-10 text-pink-400" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14.5 4.5L14.5 3.5C14.5 2.39543 13.6046 1.5 12.5 1.5H3.5C2.39543 1.5 1.5 2.39543 1.5 3.5V12.5C1.5 13.6046 2.39543 14.5 3.5 14.5H4.5M14.5 4.5L19.5 9.5M14.5 4.5L9.5 9.5M4.5 19.5L7.5 16.5L9.5 18.5L14.5 13.5L19.5 18.5L22.5 15.5M19.5 4.5H21.5C22.0523 4.5 22.5 4.94772 22.5 5.5V20.5C22.5 21.6046 21.6046 22.5 20.5 22.5H6.5C5.39543 22.5 4.5 21.6046 4.5 20.5V19.5M4.5 19.5L1.5 22.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h2 class="text-3xl font-bold text-center" data-lang-key="templates_title">គំរូធៀបអញ្ជើញ</h2>
+            </div>
              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                  <img src="https://placehold.co/400x500/E91E63/FFFFFF?text=Template+1" alt="Wedding Template" class="rounded-lg shadow-md hover:opacity-80 cursor-pointer transition">
                  <img src="https://placehold.co/400x500/9C27B0/FFFFFF?text=Template+2" alt="Wedding Template" class="rounded-lg shadow-md hover:opacity-80 cursor-pointer transition">
@@ -339,40 +371,49 @@
     
     <footer class="bg-white dark:bg-gray-800 mt-16 py-12 border-t dark:border-gray-700">
          <div class="container mx-auto px-6">
-             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                 <div>
-                     <h3 class="text-xl font-bold text-pink-500 mb-4" data-lang-key="nav_brand">ធៀប អនឡាញ</h3>
-                     <p class="text-gray-600 dark:text-gray-400" data-lang-key="footer_desc">វេទិកាបង្កើតកាតអញ្ជើញអាពាហ៍ពិពាហ៍ឌីជីថលឈានមុខគេនៅកម្ពុជា។</p>
-                 </div>
-                 <div>
-                     <h4 class="font-semibold text-lg mb-4" data-lang-key="footer_links">តំណភ្ជាប់រហ័ស</h4>
-                     <ul>
-                         <li class="mb-2"><a href="#" class="hover:text-pink-500" data-page="home" data-lang-key="nav_home">ទំព័រដើម</a></li>
-                         <li class="mb-2"><a href="#" class="hover:text-pink-500" data-page="features" data-lang-key="nav_features">មុខងារ</a></li>
-                         <li class="mb-2"><a href="#" class="hover:text-pink-500" data-page="pricing" data-lang-key="nav_pricing">តម្លៃ</a></li>
-                         <li class="mb-2"><a href="#" class="hover:text-pink-500" data-page="contact" data-lang-key="nav_contact">ទាក់ទងយើង</a></li>
-                     </ul>
-                 </div>
-                 <div>
-                     <h4 class="font-semibold text-lg mb-4" data-lang-key="footer_contact">ទំនាក់ទំនង</h4>
-                     <p class="flex items-center mb-2"><i class="fas fa-phone mr-2 text-pink-500"></i> +855 81 695 138</p>
-                     <p class="flex items-center mb-2"><i class="fas fa-envelope mr-2 text-pink-500"></i> samnangkhiev168@gmail.com</p>
-                     <p class="flex items-center"><i class="fas fa-map-marker-alt mr-2 text-pink-500"></i><span data-lang-key="footer_address">ភ្នំពេញ, កម្ពុជា</span></p>
-                 </div>
-                 <div>
-                     <h4 class="font-semibold text-lg mb-4" data-lang-key="footer_social">តាមដានពួកយើង</h4>
-                     <div class="flex space-x-4">
-                         <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-pink-500 text-2xl"><i class="fab fa-facebook"></i></a>
-                         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-pink-500 text-2xl"><i class="fab fa-instagram"></i></a>
-                         <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-pink-500 text-2xl"><i class="fab fa-telegram"></i></a>
-                     </div>
-                 </div>
-             </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center md:text-left">
+                <div>
+                    <h3 class="text-xl font-bold text-pink-500 mb-4 inline-block" data-lang-key="nav_brand">ធៀប អនឡាញ</h3>
+                    <p class="text-gray-600 dark:text-gray-400" data-lang-key="footer_desc">វេទិកាបង្កើតធៀបការឌីជីថលឈានមុខគេនៅកម្ពុជា។</p>
+                </div>
+                <div class="flex flex-col items-center md:items-start">
+                    <h4 class="font-semibold text-lg mb-4" data-lang-key="footer_social">ទំនាក់ទំនង & តាមដានពួកយើង</h4>
+                    <div class="flex space-x-6">
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-pink-500 text-3xl transform hover:scale-110 transition-transform"><i class="fab fa-facebook"></i></a>
+                        <a href="https://t.me/your-telegram-username" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-blue-500 text-3xl transform hover:scale-110 transition-transform"><i class="fab fa-telegram"></i></a>
+                        <a href="tel:+85581695138" class="text-gray-500 hover:text-green-500 text-3xl transform hover:scale-110 transition-transform"><i class="fas fa-phone"></i></a>
+                        <a href="mailto:samnangkhiev168@gmail.com" class="text-gray-500 hover:text-red-500 text-3xl transform hover:scale-110 transition-transform"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
              <div class="mt-10 pt-6 border-t dark:border-gray-700 text-center text-gray-600 dark:text-gray-400">
                   <p data-lang-key="footer_text">&copy; 2025 ធៀប អនឡាញ. រក្សាសិទ្ធិគ្រប់យ៉ាង។</p>
              </div>
          </div>
     </footer>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t dark:border-gray-700 shadow-[0_-1px_3px_0_rgba(0,0,0,0.1)] z-40">
+        <div class="flex justify-around h-16">
+            <a href="#" data-page="home" class="mobile-nav-item flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-pink-500 w-full transition-colors duration-200">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="nav_home">ទំព័រដើម</span>
+            </a>
+            <a href="#" data-page="features" class="mobile-nav-item flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-pink-500 w-full transition-colors duration-200">
+                <i class="fas fa-star text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="nav_features">មុខងារ</span>
+            </a>
+            <a href="#" data-page="gallery" class="mobile-nav-item flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-pink-500 w-full transition-colors duration-200">
+                <i class="fas fa-images text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="nav_templates">គំរូធៀប</span>
+            </a>
+            <a href="#" data-page="contact" class="mobile-nav-item flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-pink-500 w-full transition-colors duration-200">
+                <i class="fas fa-envelope text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="nav_contact">ទាក់ទងយើង</span>
+            </a>
+        </div>
+    </nav>
+
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -400,56 +441,78 @@
         // --- DATA FOR TRANSLATION ---
         const translations = {
             km: {
-                page_title: 'គេហទំព័រអាពាហ៍ពិពាហ៍ - ធៀប អនឡាញ', nav_brand: 'ធៀប អនឡាញ', nav_home: 'ទំព័រដើម', nav_features: 'មុខងារ', nav_pricing: 'តម្លៃ', nav_templates: 'គំរូធៀប', nav_contact: 'ទាក់ទងយើង', create_card_btn: 'បង្កើតគណនី', hero_tagline: 'ធៀប អនឡាញ - អ្នកបង្កើតធៀបការ', hero_title: 'រៀបចំគម្រោងអាពាហ៍ពិពាហ៍ក្នុងក្តីស្រមៃអ្នក', hero_subtitle: 'បង្កើតនិងរៀបចំធៀបការឌីជីថល គ្រប់គ្រងបញ្ជីភ្ញៀវ និងចែករំលែករឿងរ៉ាវស្នេហារបស់អ្នកបានយ៉ាងងាយស្រួល។', hero_cta: 'ចាប់ផ្តើមឥឡូវនេះ', stat_1_val: '២០០០+', stat_1_label: 'គូស្វាមីភរិយា', stat_2_val: '២៤/៧', stat_2_label: 'ការគាំទ្រ', stat_3_val: '៩៩%', stat_3_label: 'ការពេញចិត្ត', features_title: 'មុខងារពិសេសរបស់យើង', feature_1_title: 'ជម្រើសគំរូច្រើន', feature_1_desc: 'បង្កើតធៀបការដ៏ស្រស់ស្អាត និងអាចប្ដូរតាមបំណងបាន។', feature_2_title: 'ការគ្រប់គ្រងភ្ញៀវ', feature_2_desc: 'តាមដានការឆ្លើយតបរបស់ភ្ញៀវ និងគ្រប់គ្រងបញ្ជីឈ្មោះបានយ៉ាងងាយស្រួល។', feature_3_title: 'វិចិត្រសាលរូបភាព', feature_3_desc: 'ចែករំលែករូបថត Pre-wedding និងអនុស្សាវរីយ៍ផ្សេងៗជាមួយភ្ញៀវរបស់អ្នក។', feature_4_title: 'គ្មានការផ្សាយពាណិជ្ជកម្ម', feature_4_desc: 'ធានានូវបទពិសោធន៍ដ៏ល្អឥតខ្ចោះសម្រាប់ភ្ញៀវរបស់អ្នក។', feature_5_title: 'ការរាប់ថយក្រោយ', feature_5_desc: 'បង្ហាញម៉ោងរាប់ថយក្រោយរហូតដល់ថ្ងៃពិសេសរបស់អ្នក។', feature_6_title: 'ផែនទី', feature_6_desc: 'ភ្ជាប់ទីតាំងពិធីរបស់អ្នកជាមួយ Google Maps សម្រាប់ភ្ញៀវ។', pricing_title: 'ជ្រើសរើសកញ្ចប់របស់អ្នក', price_free_title: 'ឥតគិតថ្លៃ', price_premium_title: 'បុព្វលាភ', price_pro_title: 'អាជីវកម្ម', price_popular: 'ពេញនិយម', price_feature_1: 'គំរូធៀបមូលដ្ឋាន', price_feature_2: 'ភ្ញៀវ 50 នាក់', price_feature_3: 'គំរូធៀបទាំងអស់', price_feature_4: 'ភ្ញៀវគ្មានដែនកំណត់', price_feature_5: 'គ្មានការផ្សាយពាណិជ្ជកម្ម', price_feature_6: 'គ្រប់យ៉ាងក្នុង Premium', price_feature_7: 'ដែនផ្ទាល់ខ្លួន', price_feature_8: 'ការគាំទ្រអាទិភាព', price_choose_plan: 'ជ្រើសរើស', templates_title: 'គំរូធៀបអញ្ជើញ', contact_title: 'ទាក់ទងមកពួកយើង', form_name: 'ឈ្មោះ', form_email: 'អ៊ីមែល', form_message: 'សារ', form_send: 'ផ្ញើសារ', login_title: 'ចូលគណនី', login_btn: 'ចូលគណនី', form_password: 'ពាក្យសម្ងាត់', login_no_account: 'មិនទាន់មានគណនី?', register_link: 'បង្កើតគណនី', register_title: 'បង្កើតគណនីថ្មី', form_confirm_password: 'បញ្ជាក់ពាក្យសម្ងាត់', register_btn: 'បង្កើតគណនី', register_has_account: 'មានគណនីរួចហើយ?', login_link: 'ចូលគណនី', footer_desc: 'វេទិកាបង្កើតធៀបការឌីជីថលឈានមុខគេនៅកម្ពុជា។', footer_links: 'តំណភ្ជាប់រហ័ស', footer_contact: 'ទំនាក់ទំនង', footer_address: 'ភ្នំពេញ, កម្ពុជា', footer_social: 'តាមដានពួកយើង', footer_text: '&copy; 2025 ធៀប អនឡាញ. រក្សាសិទ្ធិគ្រប់យ៉ាង។', nav_my_card: 'ធៀបរបស់ខ្ញុំ', create_card_now_btn: 'បង្កើតធៀបឥឡូវនេះ!', logout_btn: 'ចាកចេញ',
+                page_title: 'គេហទំព័រអាពាហ៍ពិពាហ៍ - ធៀប អនឡាញ', nav_brand: 'ធៀប អនឡាញ', nav_home: 'ទំព័រដើម', nav_features: 'មុខងារ', nav_templates: 'គំរូធៀប', nav_contact: 'ទាក់ទងយើង', create_card_btn: 'បង្កើតគណនី', hero_tagline: 'ធៀប អនឡាញ - អ្នកបង្កើតធៀបការ', hero_title: 'រៀបចំគម្រោងអាពាហ៍ពិពាហ៍ក្នុងក្តីស្រមៃអ្នក', hero_subtitle: 'បង្កើតនិងរៀបចំធៀបការឌីជីថល គ្រប់គ្រងបញ្ជីភ្ញៀវ និងចែករំលែករឿងរ៉ាវស្នេហារបស់អ្នកបានយ៉ាងងាយស្រួល។', hero_cta: 'ចាប់ផ្តើមឥឡូវនេះ', stat_1_val: '២០០០+', stat_1_label: 'គូស្វាមីភរិយា', stat_2_val: '២៤/៧', stat_2_label: 'ការគាំទ្រ', stat_3_val: '៩៩%', stat_3_label: 'ការពេញចិត្ត', features_title: 'មុខងារពិសេសរបស់យើង', feature_1_title: 'ជម្រើសគំរូច្រើន', feature_1_desc: 'បង្កើតធៀបការដ៏ស្រស់ស្អាត និងអាចប្ដូរតាមបំណងបាន។', feature_2_title: 'ការគ្រប់គ្រងភ្ញៀវ', feature_2_desc: 'តាមដានការឆ្លើយតបរបស់ភ្ញៀវ និងគ្រប់គ្រងបញ្ជីឈ្មោះបានយ៉ាងងាយស្រួល។', feature_3_title: 'វិចិត្រសាលរូបភាព', feature_3_desc: 'ចែករំលែករូបថត Pre-wedding និងអនុស្សាវរីយ៍ផ្សេងៗជាមួយភ្ញៀវរបស់អ្នក។', feature_4_title: 'គ្មានការផ្សាយពាណិជ្ជកម្ម', feature_4_desc: 'ធានានូវបទពិសោធន៍ដ៏ល្អឥតខ្ចោះសម្រាប់ភ្ញៀវរបស់អ្នក។', feature_5_title: 'ការរាប់ថយក្រោយ', feature_5_desc: 'បង្ហាញម៉ោងរាប់ថយក្រោយរហូតដល់ថ្ងៃពិសេសរបស់អ្នក។', feature_6_title: 'ផែនទី', feature_6_desc: 'ភ្ជាប់ទីតាំងពិធីរបស់អ្នកជាមួយ Google Maps សម្រាប់ភ្ញៀវ។', templates_title: 'គំរូធៀបអញ្ជើញ', contact_title: 'ទាក់ទងមកពួកយើង', form_name: 'ឈ្មោះ', form_email: 'អ៊ីមែល', form_message: 'សារ', form_send: 'ផ្ញើសារ', login_title: 'ចូលគណនី', login_btn: 'ចូលគណនី', form_password: 'ពាក្យសម្ងាត់', login_no_account: 'មិនទាន់មានគណនី?', register_link: 'បង្កើតគណនី', register_title: 'បង្កើតគណនីថ្មី', form_confirm_password: 'បញ្ជាក់ពាក្យសម្ងាត់', register_btn: 'បង្កើតគណនី', register_has_account: 'មានគណនីរួចហើយ?', login_link: 'ចូលគណនី', footer_desc: 'វេទិកាបង្កើតធៀបការឌីជីថលឈានមុខគេនៅកម្ពុជា។', footer_links: 'តំណភ្ជាប់រហ័ស', footer_social: 'ទំនាក់ទំនង & តាមដានពួកយើង', footer_text: '&copy; 2025 ធៀប អនឡាញ. រក្សាសិទ្ធិគ្រប់យ៉ាង។', my_cards_link: 'ធៀបរបស់ខ្ញុំ', edit_card_link: 'កែសម្រួលធៀប', logout_btn: 'ចាកចេញ',
                 error_pass_length: 'ពាក្យសម្ងាត់ត្រូវមានយ៉ាងតិច ៦ តួអក្សរ។', error_pass_mismatch: 'ពាក្យសម្ងាត់មិនត្រូវគ្នាទេ។', success_register: 'ការបង្កើតគណនីបានជោគជ័យ!', error_email_in_use: 'អ៊ីមែលនេះត្រូវបានប្រើប្រាស់រួចហើយ។', error_generic: 'មានបញ្ហា។ សូមព្យាយាមម្តងទៀត។', error_login_failed: 'អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ។',
+                theme_toggle_text: 'ប្តូរការបង្ហាញ', lang_toggle_text_km: 'ប្តូរទៅ EN', lang_toggle_text_en: 'Switch to KM', create_card_now_btn: 'បង្កើតធៀបឥឡូវនេះ',
             },
             en: {
-                page_title: 'Wedding Website - Theap Online', nav_brand: 'Theap Online', nav_home: 'Home', nav_features: 'Features', nav_pricing: 'Pricing', nav_templates: 'Card Templates', nav_contact: 'Contact Us', create_card_btn: 'Create Account', hero_tagline: 'Theap Online - Invitation Card Maker', hero_title: 'Plan Your Dream Wedding', hero_subtitle: 'Easily create digital invitations, manage your guest list, and share your love story.', hero_cta: 'Get Started Now', stat_1_val: '2000+', stat_1_label: 'Couples', stat_2_val: '24/7', stat_2_label: 'Support', stat_3_val: '99%', stat_3_label: 'Satisfaction', features_title: 'Our Amazing Features', feature_1_title: 'Multiple Templates', feature_1_desc: 'Create beautiful and customizable digital wedding invitations.', feature_2_title: 'Guest Management', feature_2_desc: 'Track RSVPs and manage your guest list effortlessly.', feature_3_title: 'Photo Gallery', feature_3_desc: 'Share your pre-wedding photos and memories with your guests.', feature_4_title: 'Ad-Free', feature_4_desc: 'Ensure a clean and premium experience for all your guests.', feature_5_title: 'Countdown Timer', feature_5_desc: 'Display a countdown timer to your special day.', feature_6_title: 'Event Maps', feature_6_desc: 'Integrate Google Maps for your ceremony and reception venues.', pricing_title: 'Choose Your Plan', price_free_title: 'Free', price_premium_title: 'Premium', price_pro_title: 'Business', price_popular: 'Popular', price_feature_1: 'Basic Templates', price_feature_2: '50 Guests', price_feature_3: 'All Templates', price_feature_4: 'Unlimited Guests', price_feature_5: 'No Ads', price_feature_6: 'Everything in Premium', price_feature_7: 'Custom Domain', price_feature_8: 'Priority Support', price_choose_plan: 'Choose Plan', templates_title: 'Invitation Templates', contact_title: 'Contact Us', form_name: 'Name', form_email: 'Email', form_message: 'Message', form_send: 'Send Message', login_title: 'Login', login_btn: 'Login', form_password: 'Password', login_no_account: "Don't have an account?", register_link: 'Register', register_title: 'Create a New Account', form_confirm_password: 'Confirm Password', register_btn: 'Register', register_has_account: 'Already have an account?', login_link: 'Login', footer_desc: 'The leading digital wedding invitation platform in Cambodia.', footer_links: 'Quick Links', footer_contact: 'Contact', footer_address: 'Phnom Penh, Cambodia', footer_social: 'Follow Us', footer_text: '&copy; 2025 Theap Online. All rights reserved.', nav_my_card: 'My Card', create_card_now_btn: 'Create Card Now!', logout_btn: 'Logout',
+                page_title: 'Wedding Website - Theap Online', nav_brand: 'Theap Online', nav_home: 'Home', nav_features: 'Features', nav_templates: 'Card Templates', nav_contact: 'Contact Us', create_card_btn: 'Create Account', hero_tagline: 'Theap Online - Invitation Card Maker', hero_title: 'Plan Your Dream Wedding', hero_subtitle: 'Easily create digital invitations, manage your guest list, and share your love story.', hero_cta: 'Get Started Now', stat_1_val: '2000+', stat_1_label: 'Couples', stat_2_val: '24/7', stat_2_label: 'Support', stat_3_val: '99%', stat_3_label: 'Satisfaction', features_title: 'Our Amazing Features', feature_1_title: 'Multiple Templates', feature_1_desc: 'Create beautiful and customizable digital wedding invitations.', feature_2_title: 'Guest Management', feature_2_desc: 'Track RSVPs and manage your guest list effortlessly.', feature_3_title: 'Photo Gallery', feature_3_desc: 'Share your pre-wedding photos and memories with your guests.', feature_4_title: 'Ad-Free', feature_4_desc: 'Ensure a clean and premium experience for all your guests.', feature_5_title: 'Countdown Timer', feature_5_desc: 'Display a countdown timer to your special day.', feature_6_title: 'Event Maps', feature_6_desc: 'Integrate Google Maps for your ceremony and reception venues.', templates_title: 'Invitation Templates', contact_title: 'Contact Us', form_name: 'Name', form_email: 'Email', form_message: 'Message', form_send: 'Send Message', login_title: 'Login', login_btn: 'Login', form_password: 'Password', login_no_account: "Don't have an account?", register_link: 'Register', register_title: 'Create a New Account', form_confirm_password: 'Confirm Password', register_btn: 'Register', register_has_account: 'Already have an account?', login_link: 'Login', footer_desc: 'The leading digital wedding invitation platform in Cambodia.', footer_links: 'Quick Links', footer_social: 'Contact & Follow Us', footer_text: '&copy; 2025 Theap Online. All rights reserved.', my_cards_link: 'My Cards', edit_card_link: 'Edit Card', logout_btn: 'Logout',
                 error_pass_length: 'Password must be at least 6 characters long.', error_pass_mismatch: 'Passwords do not match.', success_register: 'Account created successfully!', error_email_in_use: 'This email is already in use.', error_generic: 'An error occurred. Please try again.', error_login_failed: 'Invalid email or password.',
+                theme_toggle_text: 'Toggle Theme', lang_toggle_text_km: 'Change to EN', lang_toggle_text_en: 'Switch to KM', create_card_now_btn: 'Create Card Now',
             }
         };
 
         // --- UI ELEMENTS ---
         const pages = document.querySelectorAll('.page');
-        const navLinks = document.querySelectorAll('a[data-page], button[data-page]');
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileBottomNavLinks = document.querySelectorAll('#mobile-bottom-nav a');
+        const profileButton = document.getElementById('profile-button');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const themeToggleButton = document.getElementById('theme-toggle');
+        const langToggleButton = document.getElementById('lang-toggle');
+        const heroCtaBtn = document.getElementById('hero-cta-btn');
+        const createCardNowBtn = document.getElementById('create-card-now-btn');
         let typeInterval, typingAnimationHasRun = false;
 
         // --- Page Navigation ---
         function showPage(pageId) {
             if (!pageId) return;
             pages.forEach(p => p.classList.toggle('active', p.id === pageId));
-            mobileMenu.classList.add('hidden');
             window.scrollTo(0, 0);
+
+            // Update active state for mobile bottom nav
+            mobileBottomNavLinks.forEach(link => {
+                 link.classList.toggle('active', link.dataset.page === pageId);
+            });
         }
         window.showPage = showPage;
-        navLinks.forEach(link => link.addEventListener('click', e => {
-            e.preventDefault();
-            showPage(link.getAttribute('data-page'));
-        }));
-        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
         
+        // Add event listeners to all navigation links
+        document.querySelectorAll('a[data-page], button[data-page]').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                showPage(link.getAttribute('data-page'));
+            });
+        });
+
         // --- THEME & LANGUAGE ---
-        const themeToggleButton = document.getElementById('theme-toggle');
-        const langToggleButton = document.getElementById('lang-toggle');
         let currentLang = localStorage.getItem('lang') || 'km';
 
         function applyTheme(theme) {
-            document.documentElement.classList.toggle('dark', theme === 'dark');
-            document.getElementById('sun-icon').classList.toggle('hidden', theme === 'dark');
-            document.getElementById('moon-icon').classList.toggle('hidden', theme !== 'dark');
+            const isDark = theme === 'dark';
+            document.documentElement.classList.toggle('dark', isDark);
+            document.getElementById('sun-icon').classList.toggle('hidden', isDark);
+            document.getElementById('moon-icon').classList.toggle('hidden', !isDark);
         }
 
         function changeLanguage(lang) {
             const heroTitleEl = document.querySelector('[data-lang-key="hero_title"]');
             document.querySelectorAll('[data-lang-key]').forEach(el => {
                 const key = el.getAttribute('data-lang-key');
-                if (translations[lang]?.[key] && el !== heroTitleEl) el.innerHTML = translations[lang][key];
+                if (translations[lang]?.[key] && el !== heroTitleEl) {
+                    // Handle specific cases for span inside buttons
+                    if(el.id === 'lang-toggle') {
+                        el.querySelector('span').innerText = translations[lang][lang === 'km' ? 'lang_toggle_text_km' : 'lang_toggle_text_en'];
+                    } else {
+                        el.innerHTML = translations[lang][key];
+                    }
+                }
             });
             document.title = translations[lang].page_title;
             document.documentElement.lang = lang;
-            document.getElementById('lang-text').innerText = lang === 'km' ? 'EN' : 'ខ្មែរ';
+            
+            // Update lang button text separately
+            document.getElementById('lang-text').innerText = lang === 'km' ? translations.km.lang_toggle_text_km : translations.en.lang_toggle_text_en;
+
             if (heroTitleEl && !typingAnimationHasRun) startTypingAnimation(heroTitleEl, translations[lang].hero_title);
         }
 
@@ -479,6 +542,14 @@
             localStorage.setItem('lang', currentLang);
             changeLanguage(currentLang);
         });
+
+        // --- Profile Dropdown Logic ---
+        profileButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('hidden');
+        });
+        document.addEventListener('click', () => profileDropdown.classList.add('hidden'));
+
 
         // --- AUTHENTICATION LOGIC ---
         const loginForm = document.getElementById('login-form');
@@ -547,7 +618,7 @@
                 const password = document.getElementById('login-password').value;
 
                 signInWithEmailAndPassword(auth, email, password)
-                    .then(() => { window.location.href = 'theapka.html'; })
+                    .then(() => { window.location.href = 'my-cards.html'; }) // Redirect to user dashboard
                     .catch(() => { showAuthError(loginForm, 'error_login_failed'); })
                     .finally(() => { toggleSpinner(loginForm, false); });
             });
@@ -555,22 +626,24 @@
 
         onAuthStateChanged(auth, (user) => {
             const loggedIn = !!user;
-            document.getElementById('auth-buttons-desktop').style.display = loggedIn ? 'none' : 'block';
-            document.getElementById('user-actions-desktop').style.display = loggedIn ? 'flex' : 'none';
-            document.getElementById('auth-buttons-mobile').style.display = loggedIn ? 'none' : 'block';
-            document.getElementById('user-actions-mobile').classList.toggle('hidden', !loggedIn);
-            document.getElementById('my-card-link').classList.toggle('hidden', !loggedIn);
-            document.getElementById('mobile-my-card-link').classList.toggle('hidden', !loggedIn);
-
-            // Hide main "Create Account" button if logged in
-            document.querySelectorAll('[data-lang-key="hero_cta"]').forEach(el => el.style.display = loggedIn ? 'none' : 'inline-block');
+            document.getElementById('auth-buttons').classList.toggle('hidden', loggedIn);
+            document.getElementById('user-profile-container').classList.toggle('hidden', !loggedIn);
+            
+            // Toggle hero buttons
+            heroCtaBtn.classList.toggle('hidden', loggedIn);
+            createCardNowBtn.classList.toggle('hidden', !loggedIn);
+            
+            if (loggedIn) {
+                const displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
+                document.getElementById('profile-name').textContent = displayName;
+                document.getElementById('profile-email').textContent = user.email || '';
+                document.getElementById('profile-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=f472b6&color=fff&rounded=true`;
+            }
         });
         
-        const handleLogout = () => {
+        document.getElementById('logout-btn').addEventListener('click', () => {
              signOut(auth).catch(error => console.error('Logout Error:', error));
-        };
-        document.getElementById('logout-btn-desktop').addEventListener('click', handleLogout);
-        document.getElementById('logout-btn-mobile').addEventListener('click', handleLogout);
+        });
 
         // --- INITIALIZATION ---
         const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -580,3 +653,4 @@
     </script>
 </body>
 </html>
+
