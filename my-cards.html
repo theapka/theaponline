@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ផ្ទាំងគ្រប់គ្រង - ធៀប អនឡាញ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    <style>
+        body { font-family: 'Kantumruy Pro', sans-serif; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-item { transition: all 0.3s ease; }
+        .tab-item.active, .tab-item:hover { color: #ec4899; border-color: #ec4899; background-color: #fce7f3; }
+        .dark .tab-item.active, .dark .tab-item:hover { background-color: rgba(236, 72, 153, 0.1); }
+        .info-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .info-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); }
+        .dark .info-card:hover { box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.1), 0 4px 6px -4px rgba(236, 72, 153, 0.1); }
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .mobile-nav-item { transition: all 0.2s ease; color: #6b7280; }
+        .dark .mobile-nav-item { color: #9ca3af; }
+        .mobile-nav-item.active { color: #ec4899; }
+    </style>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 pb-20 md:pb-0">
+
+    <div>
+        <header class="bg-white dark:bg-gray-800/50 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700/50 sticky top-0 z-50">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold text-pink-500" data-lang-key="nav_brand">ធៀប អនឡាញ</a>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-toggle" class="text-gray-600 dark:text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-globe"></i> <span id="lang-text">EN</span>
+                    </button>
+                    <button id="theme-toggle" class="text-gray-600 dark:text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-sun" id="sun-icon"></i><i class="fas fa-moon hidden" id="moon-icon"></i>
+                    </button>
+                     <div id="user-profile-container" class="relative hidden">
+                        <button id="profile-button" class="focus:outline-none">
+                            <img id="profile-avatar" src="https://placehold.co/32x32/cccccc/FFFFFF?text=U" alt="User Profile" class="w-8 h-8 rounded-full object-cover bg-gray-200 ring-2 ring-transparent hover:ring-pink-400 transition">
+                        </button>
+                        <div id="profile-dropdown" class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 hidden">
+                            <div class="px-4 py-3 border-b dark:border-gray-600">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white" id="profile-display-name">User Name</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 truncate" id="profile-email">user@example.com</p>
+                            </div>
+                            <a href="my-cards.html" class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-arrow-left fa-fw mr-2 text-gray-400"></i><span data-lang-key="my_cards_link">ធៀបរបស់ខ្ញុំ</span>
+                            </a>
+                            <a href="theapka.html" class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-edit fa-fw mr-2 text-gray-400"></i><span data-lang-key="edit_card_link">កែសម្រួលធៀប</span>
+                            </a>
+                            <button id="logout-btn" class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-sign-out-alt fa-fw mr-2 text-gray-400"></i><span data-lang-key="logout_btn">ចាកចេញ</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 sm:px-6 py-8">
+             <div id="loader" class="text-center p-10">
+                <i class="fas fa-spinner fa-spin text-4xl text-pink-500"></i>
+            </div>
+
+            <div id="dashboard-content" class="hidden">
+                <div class="mb-8 fade-in">
+                    <a href="my-cards.html" class="text-sm text-gray-500 dark:text-gray-400 hover:text-pink-500"><i class="fas fa-arrow-left mr-2"></i><span data-lang-key="back_link">ត្រលប់ទៅធៀបរបស់ខ្ញុំ</span></a>
+                    <h1 class="text-3xl font-bold mt-2 flex items-center gap-2 flex-wrap">
+                        <span data-lang-key="dashboard_title">ផ្ទាំងគ្រប់គ្រង៖</span>
+                        <a href="theapka.html" class="text-pink-500 hover:underline text-2xl font-semibold flex items-center gap-1">
+                            <span id="title-groom-name">...</span> &amp; <span id="title-bride-name">...</span> <i class="fas fa-edit text-sm"></i>
+                        </a>
+                    </h1>
+                </div>
+
+                <div id="tabs-container" class="mb-8 fade-in hidden md:flex" style="animation-delay: 100ms;">
+                    <div class="flex flex-wrap gap-2 border-b dark:border-gray-700">
+                        <button data-tab="general" class="tab-item active flex items-center gap-2 px-4 py-2 rounded-t-lg border-b-2">
+                            <i class="fas fa-globe-asia"></i> <span data-lang-key="tab_general">ទូទៅ</span>
+                        </button>
+                         <button data-tab="guests" class="tab-item flex items-center gap-2 px-4 py-2 rounded-t-lg border-b-2 border-transparent text-gray-500">
+                            <i class="fas fa-users"></i> <span data-lang-key="tab_guests">អ្នកអញ្ជើញ</span>
+                        </button>
+                         <button data-tab="location" class="tab-item flex items-center gap-2 px-4 py-2 rounded-t-lg border-b-2 border-transparent text-gray-500">
+                            <i class="fas fa-map-marked-alt"></i> <span data-lang-key="tab_location">ទីតាំងពិធី</span>
+                        </button>
+                         <a href="theapka.html" class="tab-item flex items-center gap-2 px-4 py-2 rounded-t-lg border-b-2 border-transparent text-gray-500">
+                            <i class="fas fa-edit"></i> <span data-lang-key="tab_edit">កែប្រែ</span>
+                        </a>
+                         <button data-tab="time" class="tab-item flex items-center gap-2 px-4 py-2 rounded-t-lg border-b-2 border-transparent text-gray-500">
+                            <i class="fas fa-clock"></i> <span data-lang-key="tab_time">ពេលវេលា</span>
+                        </button>
+                         <button data-tab="send" class="tab-item flex items-center gap-2 px-4 py-2 rounded-t-lg border-b-2 border-transparent text-gray-500">
+                            <i class="fas fa-paper-plane"></i> <span data-lang-key="tab_send">ផ្ញើធៀបអញ្ជើញ</span>
+                        </button>
+                         <button data-tab="qr" class="tab-item flex items-center gap-2 px-4 py-2 rounded-t-lg border-b-2 border-transparent text-gray-500">
+                            <i class="fas fa-qrcode"></i> <span data-lang-key="tab_qr">បង្ហាញQR</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="tab-content">
+                    <div data-content="general" class="fade-in">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <a href="theapka.html" class="info-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm"><div class="flex justify-between items-start"><p class="text-sm font-medium text-gray-500 dark:text-gray-400" data-lang-key="card_groom">ឈ្មោះកូនកំលោះ</p><i class="fas fa-male text-xl text-blue-400"></i></div><p id="groom-name" class="text-2xl font-bold mt-2 truncate">...</p></a>
+                            <a href="theapka.html" class="info-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm"><div class="flex justify-between items-start"><p class="text-sm font-medium text-gray-500 dark:text-gray-400" data-lang-key="card_bride">ឈ្មោះកូនក្រមុំ</p><i class="fas fa-female text-xl text-pink-400"></i></div><p id="bride-name" class="text-2xl font-bold mt-2 truncate">...</p></a>
+                            <a href="#" class="info-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm" onclick="document.querySelector('[data-tab=guests]').click(); return false;"><div class="flex justify-between items-start"><p class="text-sm font-medium text-gray-500 dark:text-gray-400" data-lang-key="card_guests">ចំនួនភ្ញៀវសរុប</p><i class="fas fa-users text-xl text-purple-400"></i></div><p id="guest-count" class="text-2xl font-bold mt-2">0 នាក់</p></a>
+                            <a href="theapka.html" class="info-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm"><div class="flex justify-between items-start"><p class="text-sm font-medium text-gray-500 dark:text-gray-400" data-lang-key="card_date">ថ្ងៃអាពាហ៍ពិពាហ៍</p><i class="fas fa-calendar-alt text-xl text-green-400"></i></div><p id="wedding-date" class="text-lg font-bold mt-2">...</p></a>
+                        </div>
+                        <div class="mt-8"><label for="invitation-text" class="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2" data-lang-key="card_text_label">អត្ថបទក្នុងធៀប (មើលតែប៉ុណ្ណោះ)</label><textarea id="invitation-text" rows="4" readonly class="w-full p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border-gray-200 dark:border-gray-700 cursor-default">...</textarea></div>
+                    </div>
+                    
+                    <div data-content="guests" class="hidden fade-in">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm mb-6">
+                            <h2 class="text-xl font-bold mb-4" data-lang-key="guest_add_title">បន្ថែមភ្ញៀវថ្មី</h2>
+                            <form id="add-guest-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label for="guest-name-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" data-lang-key="guest_name_label">ឈ្មោះភ្ញៀវ</label>
+                                    <input type="text" id="guest-name-input" class="block w-full rounded-md border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:border-pink-500 focus:ring-pink-500 sm:text-sm py-2.5 px-4" required>
+                                </div>
+                                <div>
+                                    <label for="guest-relation-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" data-lang-key="guest_relation_label">ទំនាក់ទំនង (ឧ. មិត្តភក្តិ)</label>
+                                    <input type="text" id="guest-relation-input" class="block w-full rounded-md border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:border-pink-500 focus:ring-pink-500 sm:text-sm py-2.5 px-4">
+                                </div>
+                                <div class="md:self-end">
+                                    <button type="submit" id="add-guest-btn" class="w-full bg-pink-500 text-white font-bold py-2.5 px-4 rounded-lg hover:bg-pink-600 transition duration-300 flex items-center justify-center disabled:opacity-50">
+                                        <span class="btn-text" data-lang-key="guest_add_btn">បន្ថែមភ្ញៀវ</span>
+                                        <i class="fas fa-spinner spinner ml-2 hidden"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+                            <h2 id="guest-list-title" class="text-xl font-bold mb-4" data-lang-key="guest_list_title">បញ្ជីអ្នកអញ្ជើញ (0)</h2>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3" data-lang-key="guest_table_name">ឈ្មោះ</th>
+                                            <th scope="col" class="px-6 py-3" data-lang-key="guest_table_relation">ទំនាក់ទំនង</th>
+                                            <th scope="col" class="px-6 py-3" data-lang-key="guest_table_status">ស្ថានភាព</th>
+                                            <th scope="col" class="px-6 py-3" data-lang-key="guest_table_action">សកម្មភាព</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="guest-list">
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div data-content="location" class="hidden fade-in">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+                            <h2 class="text-xl font-bold mb-4" data-lang-key="location_title">ទីតាំងពិធី</h2>
+                            <div class="space-y-2 text-gray-600 dark:text-gray-400 mb-4">
+                                <p><strong data-lang-key="location_name">ទីតាំង:</strong> <span id="location-name" class="font-semibold">...</span></p>
+                                <p><strong data-lang-key="location_address">អាសយដ្ឋានលម្អិត:</strong> <span id="location-address">...</span></p>
+                                <p><strong data-lang-key="location_map">Google Map:</strong> <a id="location-map-link" href="#" target="_blank" class="text-pink-500 hover:underline break-all">...</a></p>
+                            </div>
+                            <div id="location-map-embed" class="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center"><span class="text-gray-500" data-lang-key="location_embed_placeholder">ផែនទីនឹងបង្ហាញនៅទីនេះ...</span></div>
+                        </div>
+                    </div>
+                    
+                    <div data-content="time" class="hidden fade-in">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm mb-6">
+                            <h2 class="text-xl font-bold mb-4" data-lang-key="time_add_title">បន្ថែមកាលវិភាគកម្មវិធី</h2>
+                            <form id="add-schedule-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label for="event-time-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" data-lang-key="time_label">ពេលវេលា (ឧ. 7:00 ព្រឹក)</label>
+                                    <input type="text" id="event-time-input" class="block w-full rounded-md border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:border-pink-500 focus:ring-pink-500 sm:text-sm py-2.5 px-4" required>
+                                </div>
+                                <div>
+                                    <label for="event-desc-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" data-lang-key="time_desc_label">ពិពណ៌នា (ឧ. ពិធីហែជំនូន)</label>
+                                    <input type="text" id="event-desc-input" class="block w-full rounded-md border-gray-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:border-pink-500 focus:ring-pink-500 sm:text-sm py-2.5 px-4" required>
+                                </div>
+                                <div class="md:self-end">
+                                    <button type="submit" id="add-schedule-btn" class="w-full bg-pink-500 text-white font-bold py-2.5 px-4 rounded-lg hover:bg-pink-600 transition duration-300 flex items-center justify-center disabled:opacity-50">
+                                        <span class="btn-text" data-lang-key="time_add_btn">បន្ថែមកម្មវិធី</span>
+                                        <i class="fas fa-spinner spinner ml-2 hidden"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+                            <h2 class="text-xl font-bold mb-4" data-lang-key="time_list_title">កាលវិភាគកម្មវិធី</h2>
+                            <div id="schedule-list" class="space-y-4">
+                                </div>
+                        </div>
+                    </div>
+                    
+                    <div data-content="send" class="hidden fade-in">
+                         <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+                            <h2 class="text-xl font-bold mb-4" data-lang-key="send_title">ផ្ញើធៀបអញ្ជើញ</h2>
+                             <p class="text-gray-600 dark:text-gray-400 mb-4" data-lang-key="send_desc">ជ្រើសរើសភ្ញៀវ និង វិធីសាស្រ្តដើម្បីផ្ញើធៀបអញ្ជើញឌីជីថល។ (មុខងារនេះមិនទាន់មាន)</p>
+                            <button class="w-full bg-pink-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-pink-600 transition duration-300 opacity-50 cursor-not-allowed" data-lang-key="send_btn">ផ្ញើទៅកាន់ភ្ញៀវទាំងអស់</button>
+                        </div>
+                    </div>
+                    
+                    <div data-content="qr" class="hidden fade-in">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm text-center">
+                            <h2 class="text-xl font-bold mb-4" data-lang-key="qr_title">QR Code សម្រាប់ធៀបការ</h2>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4" data-lang-key="qr_desc">ភ្ញៀវអាចស្កេនកូដនេះដើម្បីមើលធៀបអនឡាញ។</p>
+                            <canvas id="qr-code" class="mx-auto"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="mt-16 py-8 hidden md:block"> <div class="container mx-auto px-6 text-center text-sm text-gray-500">
+                <p data-lang-key="footer_text">&copy; 2025 ធៀប អនឡាញ. រក្សាសិទ្ធិគ្រប់យ៉ាង។</p>
+            </div>
+        </footer>
+    </div>
+
+    <nav id="mobile-nav" class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t dark:border-gray-700 shadow-lg z-50">
+        <div class="flex justify-around items-center h-16">
+            <button data-tab="general" class="mobile-nav-item active flex flex-col items-center justify-center px-2">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="tab_general">ទូទៅ</span>
+            </button>
+            <button data-tab="guests" class="mobile-nav-item flex flex-col items-center justify-center px-2">
+                <i class="fas fa-users text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="tab_guests">ភ្ញៀវ</span>
+            </button>
+            <a href="theapka.html" class="mobile-nav-item flex flex-col items-center justify-center px-2">
+                <i class="fas fa-edit text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="tab_edit">កែប្រែ</span>
+            </a>
+            <button data-tab="time" class="mobile-nav-item flex flex-col items-center justify-center px-2">
+                <i class="fas fa-clock text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="tab_time">ពេលវេលា</span>
+            </button>
+            <button data-tab="qr" class="mobile-nav-item flex flex-col items-center justify-center px-2">
+                <i class="fas fa-qrcode text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="tab_qr">QR Code</span>
+            </button>
+        </div>
+    </nav>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            onSnapshot, 
+            collection, 
+            addDoc, 
+            deleteDoc, 
+            serverTimestamp,
+            query,
+            orderBy
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyBuE7NiFGrSg8FdKq-E_I0ygle3HetUhsw",
+          authDomain: "theap-online-website.firebaseapp.com",
+          projectId: "theap-online-website",
+          storageBucket: "theap-online-website.appspot.com",
+          messagingSenderId: "460601895037",
+          appId: "1:460601895037:web:e40ea194c9d801934e2914"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- បន្ថែម៖ Translation Object ---
+        const translations = {
+            km: {
+                page_title: 'ផ្ទាំងគ្រប់គ្រង - ធៀប អនឡាញ',
+                nav_brand: 'ធៀប អនឡាញ',
+                my_cards_link: 'ធៀបរបស់ខ្ញុំ',
+                edit_card_link: 'កែសម្រួលធៀប',
+                logout_btn: 'ចាកចេញ',
+                back_link: 'ត្រលប់ទៅធៀបរបស់ខ្ញុំ',
+                dashboard_title: 'ផ្ទាំងគ្រប់គ្រង៖',
+                tab_general: 'ទូទៅ',
+                tab_guests: 'អ្នកអញ្ជើញ',
+                tab_location: 'ទីតាំងពិធី',
+                tab_edit: 'កែប្រែ',
+                tab_time: 'ពេលវេលា',
+                tab_send: 'ផ្ញើធៀបអញ្ជើញ',
+                tab_qr: 'បង្ហាញQR',
+                card_groom: 'ឈ្មោះកូនកំលោះ',
+                card_bride: 'ឈ្មោះកូនក្រមុំ',
+                card_guests: 'ចំនួនភ្ញៀវសរុប',
+                card_date: 'ថ្ងៃអាពាហ៍ពិពាហ៍',
+                card_text_label: 'អត្ថបទក្នុងធៀប (មើលតែប៉ុណ្ណោះ)',
+                guest_add_title: 'បន្ថែមភ្ញៀវថ្មី',
+                guest_name_label: 'ឈ្មោះភ្ញៀវ',
+                guest_relation_label: 'ទំនាក់ទំនង (ឧ. មិត្តភក្តិ)',
+                guest_add_btn: 'បន្ថែមភ្ញៀវ',
+                guest_list_title: 'បញ្ជីអ្នកអញ្ជើញ',
+                guest_table_name: 'ឈ្មោះ',
+                guest_table_relation: 'ទំនាក់ទំនង',
+                guest_table_status: 'ស្ថានភាព',
+                guest_table_action: 'សកម្មភាព',
+                location_title: 'ទីតាំងពិធី',
+                location_name: 'ទីតាំង:',
+                location_address: 'អាសយដ្ឋានលម្អិត:',
+                location_map: 'Google Map:',
+                location_embed_placeholder: 'ផែនទីនឹងបង្ហាញនៅទីនេះ (ប្រសិនបើបានបញ្ចូលកូដ Embed)',
+                time_add_title: 'បន្ថែមកាលវិភាគកម្មវិធី',
+                time_label: 'ពេលវេលា (ឧ. 7:00 ព្រឹក)',
+                time_desc_label: 'ពិពណ៌នា (ឧ. ពិធីហែជំនូន)',
+                time_add_btn: 'បន្ថែមកម្មវិធី',
+                time_list_title: 'កាលវិភាគកម្មវិធី',
+                send_title: 'ផ្ញើធៀបអញ្ជើញ',
+                send_desc: 'ជ្រើសរើសភ្ញៀវ និង វិធីសាស្រ្តដើម្បីផ្ញើធៀបអញ្ជើញឌីជីថល។ (មុខងារនេះមិនទាន់មាន)',
+                send_btn: 'ផ្ញើទៅកាន់ភ្ញៀវទាំងអស់',
+                qr_title: 'QR Code សម្រាប់ធៀបការ',
+                qr_desc: 'ភ្ញៀវអាចស្កេនកូដនេះដើម្បីមើលធៀបអនឡាញ។',
+                footer_text: '&copy; 2025 ធៀប អនឡាញ. រក្សាសិទ្ធិគ្រប់យ៉ាង។',
+                guest_status_pending: 'រង់ចាំ',
+                guest_status_sent: 'បានផ្ញើ',
+                guest_relation_na: 'N/A',
+                guest_list_empty: 'មិនទាន់មានភ្ញៀវដែលបានអញ្ជើញទេ។',
+                schedule_list_empty: 'មិនទាន់មានកាលវិភាគទេ។',
+                confirm_delete_guest: 'តើអ្នកពិតជាចង់លុបភ្ញៀវនេះមែនទេ?',
+                confirm_delete_event: 'តើអ្នកពិតជាចង់លុបកម្មវិធីនេះមែនទេ?',
+                error_add_guest: 'Error adding guest. Please try again.',
+                error_delete_guest: 'Error deleting guest. Please try again.',
+                error_add_event: 'Error adding event. Please try again.',
+                error_delete_event: 'Error deleting event. Please try again.',
+                date_not_set: 'មិនទាន់កំណត់',
+                invitation_text_placeholder: 'សូមគោរពអញ្ជើញ... (មិនទាន់បានកំណត់)',
+                invitation_text_guide: 'សូមចូលទៅ "កែប្រែ" ដើម្បីបំពេញព័ត៌មាន'
+            },
+            en: {
+                page_title: 'Dashboard - Theap Online',
+                nav_brand: 'Theap Online',
+                my_cards_link: 'My Cards',
+                edit_card_link: 'Edit Card',
+                logout_btn: 'Logout',
+                back_link: 'Back to My Cards',
+                dashboard_title: 'Dashboard:',
+                tab_general: 'General',
+                tab_guests: 'Guests',
+                tab_location: 'Location',
+                tab_edit: 'Edit',
+                tab_time: 'Schedule',
+                tab_send: 'Send Invite',
+                tab_qr: 'Show QR',
+                card_groom: "Groom's Name",
+                card_bride: "Bride's Name",
+                card_guests: 'Total Guests',
+                card_date: 'Wedding Date',
+                card_text_label: 'Invitation Text (Read-only)',
+                guest_add_title: 'Add New Guest',
+                guest_name_label: 'Guest Name',
+                guest_relation_label: 'Relation (e.g., Friend)',
+                guest_add_btn: 'Add Guest',
+                guest_list_title: 'Guest List',
+                guest_table_name: 'Name',
+                guest_table_relation: 'Relation',
+                guest_table_status: 'Status',
+                guest_table_action: 'Action',
+                location_title: 'Event Location',
+                location_name: 'Location:',
+                location_address: 'Address Detail:',
+                location_map: 'Google Map:',
+                location_embed_placeholder: 'Map embed will show here (if code is provided)',
+                time_add_title: 'Add Event Schedule',
+                time_label: 'Time (e.g., 7:00 AM)',
+                time_desc_label: 'Description (e.g., Groom\'s Procession)',
+                time_add_btn: 'Add Event',
+                time_list_title: 'Event Schedule',
+                send_title: 'Send Invitation',
+                send_desc: 'Select guests and method to send digital invitations. (This feature is not yet available)',
+                send_btn: 'Send to All Guests',
+                qr_title: 'QR Code for Invitation',
+                qr_desc: 'Guests can scan this code to view the online invitation.',
+                footer_text: '&copy; 2025 Theap Online. All rights reserved.',
+                guest_status_pending: 'Pending',
+                guest_status_sent: 'Sent',
+                guest_relation_na: 'N/A',
+                guest_list_empty: 'No guests have been added yet.',
+                schedule_list_empty: 'No schedule has been added yet.',
+                confirm_delete_guest: 'Are you sure you want to delete this guest?',
+                confirm_delete_event: 'Are you sure you want to delete this event?',
+                error_add_guest: 'Error adding guest. Please try again.',
+                error_delete_guest: 'Error deleting guest. Please try again.',
+                error_add_event: 'Error adding event. Please try again.',
+                error_delete_event: 'Error deleting event. Please try again.',
+                date_not_set: 'Not set',
+                invitation_text_placeholder: 'Dearly invite... (Not set)',
+                invitation_text_guide: 'Please go to "Edit" to fill in the information'
+            }
+        };
+        // --- ចប់ Translation Object ---
+
+
+        // UI Elements
+        const themeToggleButton = document.getElementById('theme-toggle');
+        // បន្ថែម៖ ហៅប៊ូតុងភាសា
+        const langToggleButton = document.getElementById('lang-toggle');
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        const profileButton = document.getElementById('profile-button');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const logoutBtn = document.getElementById('logout-btn');
+        const loader = document.getElementById('loader');
+        const dashboardContent = document.getElementById('dashboard-content');
+        const tabsContainer = document.getElementById('tabs-container');
+        const tabContents = document.getElementById('tab-content').children;
+        const addGuestForm = document.getElementById('add-guest-form');
+        const guestNameInput = document.getElementById('guest-name-input');
+        const guestRelationInput = document.getElementById('guest-relation-input');
+        const addGuestBtn = document.getElementById('add-guest-btn');
+        const guestListEl = document.getElementById('guest-list');
+        const addScheduleForm = document.getElementById('add-schedule-form');
+        const eventTimeInput = document.getElementById('event-time-input');
+        const eventDescInput = document.getElementById('event-desc-input');
+        const addScheduleBtn = document.getElementById('add-schedule-btn');
+        const scheduleListEl = document.getElementById('schedule-list');
+        const mobileNavContainer = document.getElementById('mobile-nav');
+
+        let currentUser = null;
+        // បន្ថែម៖ អថេរភាសា
+        let currentLang = localStorage.getItem('lang') || 'km';
+
+        // --- Theme Logic ---
+        function applyTheme(theme) {
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+            sunIcon.classList.toggle('hidden', theme === 'dark');
+            moonIcon.classList.toggle('hidden', theme !== 'dark');
+        }
+        themeToggleButton.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            applyTheme(isDark ? 'dark' : 'light');
+        });
+
+        // --- បន្ថែម៖ Language Logic ---
+        function changeLanguage(lang) {
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (translations[lang]?.[key]) {
+                    const target = (el.querySelector('span') && el.dataset.langKey === key) ? el.querySelector('span') : el;
+                    target.innerHTML = translations[lang][key];
+                }
+            });
+            document.title = translations[lang].page_title;
+            document.documentElement.lang = lang;
+            document.getElementById('lang-text').innerText = lang === 'km' ? 'EN' : 'ខ្មែរ';
+
+            // ត្រូវ Update placeholder ភាសា
+            const guestNamePlaceholder = translations[lang].guest_name_label || 'Guest Name';
+            guestNameInput.placeholder = guestNamePlaceholder;
+            guestRelationInput.placeholder = translations[lang].guest_relation_label || 'Relation (e.g., Friend)';
+            eventTimeInput.placeholder = translations[lang].time_label || 'Time (e.g., 7:00 AM)';
+            eventDescInput.placeholder = translations[lang].time_desc_label || 'Description (e.g., Groom\'s Procession)';
+        }
+        langToggleButton.addEventListener('click', () => {
+            currentLang = currentLang === 'km' ? 'en' : 'km';
+            localStorage.setItem('lang', currentLang);
+            changeLanguage(currentLang);
+            // ត្រូវ Update UI ខ្លះដែលពឹងផ្អែកលើភាសា
+            if (currentUser) {
+                // ហៅ Logic នេះឡើងវិញដើម្បី update ភាសានៅក្នុង List
+                updateGuestListUI(guestListEl.querySelectorAll('tr').length === 1 && guestListEl.querySelector('td[colspan="4"]'), true);
+                updateScheduleListUI(scheduleListEl.children.length === 1 && scheduleListEl.querySelector('p'));
+                // ហៅ onSnapshot ឡើងវិញ (ឬ refresh data) មិនចាំបាច់ទេ ព្រោះ onSnapshot នឹង update ពេល data ដូរ
+                // ប៉ុន្តែអក្សរ tĩnh (static text) ដូចជា "empty" message ត្រូវការ update
+                listenToInvitationData(currentUser.uid); // ហៅឡើងវិញដើម្បី update ថ្ងៃខែ
+                listenToGuests(currentUser.uid); // ហៅឡើងវិញដើម្បី update ភាសាក្នុង list
+            }
+        });
+        // --- ចប់ Language Logic ---
+
+        // --- Profile Dropdown & Logout ---
+        profileButton.addEventListener('click', e => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('hidden');
+        });
+        document.addEventListener('click', () => profileDropdown.classList.add('hidden'));
+        logoutBtn.addEventListener('click', () => signOut(auth));
+
+        // --- Refactored Tab Logic (នៅដដែល) ---
+        function switchTab(clickedButton) {
+            if (!clickedButton || clickedButton.tagName === 'A' || clickedButton.classList.contains('active')) return;
+
+            const tabName = clickedButton.dataset.tab;
+            if (!tabName) return;
+
+            tabsContainer.querySelectorAll('.tab-item.active').forEach(btn => btn.classList.remove('active', 'border-pink-500', 'bg-pink-50', 'dark:bg-opacity-10'));
+            tabsContainer.querySelectorAll('.tab-item').forEach(btn => btn.classList.add('border-transparent', 'text-gray-500'));
+            
+            mobileNavContainer.querySelectorAll('.mobile-nav-item.active').forEach(btn => btn.classList.remove('active', 'text-pink-500'));
+            mobileNavContainer.querySelectorAll('.mobile-nav-item').forEach(btn => btn.classList.add('text-gray-500', 'dark:text-gray-400'));
+
+            const desktopBtn = tabsContainer.querySelector(`.tab-item[data-tab="${tabName}"]`);
+            if (desktopBtn) {
+                desktopBtn.classList.add('active', 'border-pink-500', 'bg-pink-50', 'dark:bg-opacity-10');
+                desktopBtn.classList.remove('border-transparent', 'text-gray-500');
+            }
+            
+            const mobileBtn = mobileNavContainer.querySelector(`.mobile-nav-item[data-tab="${tabName}"]`);
+            if (mobileBtn) {
+                mobileBtn.classList.add('active', 'text-pink-500');
+                mobileBtn.classList.remove('text-gray-500', 'dark:text-gray-400');
+            }
+            
+            Array.from(tabContents).forEach(content => {
+                content.classList.toggle('hidden', content.dataset.content !== tabName);
+            });
+            
+            if(tabName === 'qr' && currentUser) {
+                generateQRCode(currentUser.uid);
+            }
+        }
+        tabsContainer.addEventListener('click', (e) => {
+            const tabButton = e.target.closest('.tab-item');
+            switchTab(tabButton);
+        });
+        mobileNavContainer.addEventListener('click', (e) => {
+            const tabButton = e.target.closest('.mobile-nav-item');
+            switchTab(tabButton);
+        });
+        
+        // --- QR Code Logic (នៅដដែល) ---
+        function generateQRCode(userId) {
+             if(!userId) return;
+             // ត្រូវប្រាកដថា link នេះត្រឹមត្រូវ (ឧ. card.html)
+             const shareUrl = `${window.location.origin}/card.html?id=${userId}`;
+             new QRious({
+                element: document.getElementById('qr-code'),
+                value: shareUrl,
+                size: 200,
+                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
+                foreground: document.documentElement.classList.contains('dark') ? '#f3f4f6' : '#111827',
+            });
+        }
+        
+        // --- Data Loading Logic (កែប្រែឱ្យប្រើភាសា) ---
+        function listenToInvitationData(userId) {
+            const docRef = doc(db, "weddingInvitations", userId);
+            onSnapshot(docRef, (docSnap) => {
+                const groomEl = document.getElementById('groom-name');
+                const brideEl = document.getElementById('bride-name');
+                const dateEl = document.getElementById('wedding-date');
+                const titleGroomEl = document.getElementById('title-groom-name');
+                const titleBrideEl = document.getElementById('title-bride-name');
+                const invitationTextEl = document.getElementById('invitation-text');
+                const locationNameEl = document.getElementById('location-name');
+                const locationAddressEl = document.getElementById('location-address');
+                const locationMapLinkEl = document.getElementById('location-map-link');
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const groomName = data.groomName || '...';
+                    const brideName = data.brideName || '...';
+                    
+                    groomEl.textContent = groomName;
+                    brideEl.textContent = brideName;
+                    titleGroomEl.textContent = groomName;
+                    titleBrideEl.textContent = brideName;
+                    // ប្រើ default text ពី translation
+                    invitationTextEl.value = data.invitationText || translations[currentLang].invitation_text_placeholder;
+                    
+                    locationNameEl.textContent = data.location || '...';
+                    locationAddressEl.textContent = data.locationDetail || '...';
+                    if(data.mapLink) {
+                        locationMapLinkEl.href = data.mapLink;
+                        locationMapLinkEl.textContent = data.mapLink;
+                    } else {
+                        locationMapLinkEl.href = '#';
+                        locationMapLinkEl.textContent = '...';
+                    }
+                    
+                    if (data.weddingDate) {
+                        const date = new Date(data.weddingDate);
+                        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+                        // ប្រើភាសាដែលកំពុងជ្រើសរើស
+                        const locale = currentLang === 'km' ? 'km-KH' : 'en-US';
+                        dateEl.textContent = date.toLocaleDateString(locale, options);
+                    } else {
+                        dateEl.textContent = translations[currentLang].date_not_set;
+                    }
+                } else {
+                    groomEl.textContent = '...';
+                    brideEl.textContent = '...';
+                    titleGroomEl.textContent = '...';
+                    titleBrideEl.textContent = '...';
+                    dateEl.textContent = translations[currentLang].date_not_set;
+                    invitationTextEl.value = translations[currentLang].invitation_text_guide;
+                }
+                 loader.classList.add('hidden');
+                 dashboardContent.classList.remove('hidden');
+            }, (error) => {
+                console.error("Error listening to invitation data:", error);
+                 loader.classList.add('hidden');
+                 dashboardContent.classList.remove('hidden');
+            });
+        }
+        
+        // បំបែក Function សម្រាប់ Update UI ងាយស្រួលប្តូរភាសា
+        function updateGuestListUI(isEmpty, forceLangUpdate = false) {
+            if (isEmpty) {
+                guestListEl.innerHTML = `<tr><td colspan="4" class="text-center py-4">${translations[currentLang].guest_list_empty}</td></tr>`;
+            } else if (forceLangUpdate) {
+                // ត្រូវ Update ភាសានៅក្នុង List ដែលមានស្រាប់
+                guestListEl.querySelectorAll('tr').forEach(row => {
+                    const statusCell = row.querySelector('td:nth-child(3)');
+                    if (statusCell) {
+                        const currentStatus = statusCell.dataset.statusKey || 'Pending'; // យក status ពី DB
+                        statusCell.textContent = translations[currentLang][currentStatus === 'Sent' ? 'guest_status_sent' : 'guest_status_pending'];
+                    }
+                    const relationCell = row.querySelector('td:nth-child(2)');
+                    if (relationCell && (relationCell.dataset.relationKey === 'N/A' || relationCell.textContent === 'N/A')) {
+                        relationCell.textContent = translations[currentLang].guest_relation_na;
+                    }
+                });
+            }
+        }
+        function listenToGuests(userId) {
+            const guestsColRef = collection(db, "weddingInvitations", userId, "guests");
+            const q = query(guestsColRef, orderBy("createdAt", "desc"));
+            
+            onSnapshot(q, (snapshot) => {
+                const guestCountEl = document.getElementById('guest-count');
+                const guestListTitleEl = document.getElementById('guest-list-title');
+                
+                guestListEl.innerHTML = '';
+                
+                if(snapshot.empty) {
+                     updateGuestListUI(true);
+                } else {
+                    snapshot.forEach(doc => {
+                        const guest = doc.data();
+                        const statusKey = guest.status || 'Pending'; // 'Pending' or 'Sent' (from DB)
+                        const statusText = translations[currentLang][statusKey === 'Sent' ? 'guest_status_sent' : 'guest_status_pending'];
+                        const statusColor = statusKey === 'Sent' ? 'text-green-500' : 'text-yellow-500';
+                        const relation = guest.relation || translations[currentLang].guest_relation_na;
+                        const relationKey = guest.relation ? guest.relation : 'N/A';
+                        
+                        const row = `
+                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <td class="px-6 py-4">${guest.name}</td>
+                                <td class="px-6 py-4" data-relation-key="${relationKey}">${relation}</td>
+                                <td class="px-6 py-4 ${statusColor}" data-status-key="${statusKey}">${statusText}</td>
+                                <td class="px-6 py-4">
+                                    <button data-id="${doc.id}" class="delete-guest-btn text-red-500 hover:text-red-700 focus:outline-none">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>`;
+                        guestListEl.innerHTML += row;
+                    });
+                }
+                const guestCountText = currentLang === 'km' ? `${snapshot.size} នាក់` : `${snapshot.size} Guests`;
+                guestCountEl.textContent = guestCountText;
+                guestListTitleEl.textContent = `${translations[currentLang].guest_list_title} (${snapshot.size})`;
+            }, (error) => {
+                console.error("Error listening to guests:", error);
+            });
+        }
+        
+        // បំបែក Function សម្រាប់ Update UI ងាយស្រួលប្តូរភាសា
+        function updateScheduleListUI(isEmpty) {
+            if(isEmpty) {
+                 scheduleListEl.innerHTML = `<p class="text-center text-gray-500">${translations[currentLang].schedule_list_empty}</p>`;
+            }
+        }
+        function listenToSchedule(userId) {
+            const scheduleColRef = collection(db, "weddingInvitations", userId, "schedule");
+            const q = query(scheduleColRef, orderBy("createdAt", "asc"));
+            
+            onSnapshot(q, (snapshot) => {
+                scheduleListEl.innerHTML = '';
+                if(snapshot.empty) {
+                     updateScheduleListUI(true);
+                } else {
+                    const icons = ['fa-camera-retro', 'fa-ring', 'fa-utensils', 'fa-music', 'fa-glass-cheers'];
+                    let iconIndex = 0;
+                    snapshot.forEach(doc => {
+                        const event = doc.data();
+                        const icon = icons[iconIndex % icons.length];
+                        iconIndex++;
+                        
+                        const eventItem = `
+                            <div class="flex items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm">
+                                <div class="flex items-start gap-4">
+                                    <div class="flex-shrink-0 bg-pink-100 dark:bg-pink-900/50 text-pink-600 dark:text-pink-300 p-3 rounded-lg w-12 h-12 flex items-center justify-center">
+                                        <i class="fas ${icon}"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-800 dark:text-gray-100">${event.time}</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">${event.description}</p>
+                                    </div>
+                                </div>
+                                <button data-id="${doc.id}" class="delete-schedule-btn flex-shrink-0 text-red-500 hover:text-red-700 focus:outline-none">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>`;
+                        scheduleListEl.innerHTML += eventItem;
+                    });
+                }
+            }, (error) => {
+                console.error("Error listening to schedule:", error);
+            });
+        }
+        
+        function setupUIForUser(user) {
+            const displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'អ្នក​ប្រើប្រាស់');
+            document.getElementById('profile-email').textContent = user.email || 'Anonymous User';
+            document.getElementById('profile-display-name').textContent = displayName;
+            document.getElementById('profile-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=f472b6&color=fff`;
+            document.getElementById('user-profile-container').classList.remove('hidden');
+
+            listenToInvitationData(user.uid);
+            listenToGuests(user.uid);
+            listenToSchedule(user.uid);
+        }
+
+        // --- Auth State Logic ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                setupUIForUser(user);
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // --- Add Guest Form Submit Logic ---
+        addGuestForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+            const guestName = guestNameInput.value.trim();
+            const guestRelation = guestRelationInput.value.trim();
+            if (!guestName) return;
+            addGuestBtn.disabled = true;
+            addGuestBtn.querySelector('.btn-text').classList.add('hidden');
+            addGuestBtn.querySelector('.spinner').classList.remove('hidden');
+            try {
+                const guestsColRef = collection(db, "weddingInvitations", currentUser.uid, "guests");
+                await addDoc(guestsColRef, {
+                    name: guestName,
+                    relation: guestRelation,
+                    status: "Pending", // ប្រើភាសាអង់គ្លេសក្នុង Database
+                    createdAt: serverTimestamp()
+                });
+                guestNameInput.value = '';
+                guestRelationInput.value = '';
+            } catch (error) {
+                console.error("Error adding guest: ", error);
+                alert(translations[currentLang].error_add_guest);
+            } finally {
+                addGuestBtn.disabled = false;
+                addGuestBtn.querySelector('.btn-text').classList.remove('hidden');
+                addGuestBtn.querySelector('.spinner').classList.add('hidden');
+            }
+        });
+
+        // --- Delete Guest Logic ---
+        guestListEl.addEventListener('click', async (e) => {
+            const deleteButton = e.target.closest('.delete-guest-btn');
+            if (deleteButton && currentUser) {
+                const guestId = deleteButton.dataset.id;
+                if (confirm(translations[currentLang].confirm_delete_guest)) {
+                    try {
+                        const guestDocRef = doc(db, "weddingInvitations", currentUser.uid, "guests", guestId);
+                        await deleteDoc(guestDocRef);
+                    } catch (error) {
+                        console.error("Error deleting guest: ", error);
+                        alert(translations[currentLang].error_delete_guest);
+                    }
+                }
+            }
+        });
+        
+        // --- Add Schedule Form Submit Logic ---
+        addScheduleForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+            const eventTime = eventTimeInput.value.trim();
+            const eventDesc = eventDescInput.value.trim();
+            if (!eventTime || !eventDesc) return;
+            addScheduleBtn.disabled = true;
+            addScheduleBtn.querySelector('.btn-text').classList.add('hidden');
+            addScheduleBtn.querySelector('.spinner').classList.remove('hidden');
+            try {
+                const scheduleColRef = collection(db, "weddingInvitations", currentUser.uid, "schedule");
+                await addDoc(scheduleColRef, {
+                    time: eventTime,
+                    description: eventDesc,
+                    createdAt: serverTimestamp()
+                });
+                eventTimeInput.value = '';
+                eventDescInput.value = '';
+            } catch (error) {
+                console.error("Error adding schedule event: ", error);
+                alert(translations[currentLang].error_add_event);
+            } finally {
+                addScheduleBtn.disabled = false;
+                addScheduleBtn.querySelector('.btn-text').classList.remove('hidden');
+                addScheduleBtn.querySelector('.spinner').classList.add('hidden');
+            }
+        });
+        
+        // --- Delete Schedule Logic ---
+        scheduleListEl.addEventListener('click', async (e) => {
+            const deleteButton = e.target.closest('.delete-schedule-btn');
+            if (deleteButton && currentUser) {
+                const eventId = deleteButton.dataset.id;
+                if (confirm(translations[currentLang].confirm_delete_event)) {
+                    try {
+                        const eventDocRef = doc(db, "weddingInvitations", currentUser.uid, "schedule", eventId);
+                        await deleteDoc(eventDocRef);
+                    } catch (error) {
+                        console.error("Error deleting event: ", error);
+                        alert(translations[currentLang].error_delete_event);
+                    }
+                }
+            }
+        });
+
+        // --- Initialization ---
+        const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        applyTheme(currentTheme);
+        // ហៅ changeLanguage ភ្លាមៗពេលបើកទំព័រ
+        changeLanguage(currentLang);
+    </script>
+</body>
+</html>
