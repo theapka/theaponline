@@ -128,6 +128,8 @@
             animation: pulse-glow 3s ease-in-out infinite;
         }
 
+        /* Removed Phone Mockup Styles */
+
     </style>
     <script>
         // Tailwind CSS configuration for dark mode
@@ -150,10 +152,22 @@
             
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center space-x-6">
-                <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="home" data-lang-key="nav_home">ទំព័រដើម</a>
-                <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="features" data-lang-key="nav_features">មុខងារ</a>
-                <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="gallery" data-lang-key="nav_templates">គំរូធៀប</a>
-                <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="contact" data-lang-key="nav_contact">ទាក់ទងយើង</a>
+                <a href="#" class="flex items-center text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="home" data-lang-key="nav_home">
+                    <i class="fas fa-home mr-2 opacity-75"></i>
+                    <span>ទំព័រដើម</span>
+                </a>
+                <a href="#" class="flex items-center text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="features" data-lang-key="nav_features">
+                    <i class="fas fa-star mr-2 opacity-75"></i>
+                    <span>មុខងារ</span>
+                </a>
+                <a href="#" class="flex items-center text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="gallery" data-lang-key="nav_templates">
+                    <i class="fas fa-images mr-2 opacity-75"></i>
+                    <span>គំរូធៀប</span>
+                </a>
+                <a href="#" class="flex items-center text-gray-600 dark:text-gray-300 hover:text-pink-500" data-page="contact" data-lang-key="nav_contact">
+                    <i class="fas fa-envelope mr-2 opacity-75"></i>
+                    <span>ទាក់ទងយើង</span>
+                </a>
             </nav>
 
             <div class="flex items-center space-x-4">
@@ -230,11 +244,18 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Image Block -->
                 <div class="relative pt-12 md:pt-0">
+                    <!-- Background blur circles -->
                     <div class="absolute w-72 h-72 bg-pink-200 dark:bg-pink-800/50 rounded-full -top-10 -right-4 blur-2xl opacity-60"></div>
                     <div class="absolute w-72 h-72 bg-purple-200 dark:bg-purple-800/50 rounded-full -bottom-10 -left-4 blur-2xl opacity-60"></div>
-                    <img src="photo/T1.JPG" alt="Phone Mockup showing wedding invitation" class="relative z-10 rounded-3xl shadow-2xl mx-auto animate-float">
+                    
+                    <!-- Main Image -->
+                    <img src="photo/T2.png" alt="Wedding Invitation Preview" class="relative z-10 rounded-3xl shadow-2xl mx-auto animate-float">
                 </div>
+                <!-- End Image Block -->
+
             </div>
         </section>
 
@@ -503,7 +524,16 @@
                     if(el.id === 'lang-toggle') {
                         el.querySelector('span').innerText = translations[lang][lang === 'km' ? 'lang_toggle_text_km' : 'lang_toggle_text_en'];
                     } else {
-                        el.innerHTML = translations[lang][key];
+                        // Check if the element is the nav link text span
+                        if (el.tagName === 'SPAN' && el.parentElement.tagName === 'A' && el.parentElement.closest('nav')) {
+                             el.innerHTML = translations[lang][key];
+                        } else if (el.tagName === 'A' && el.closest('nav')) {
+                             // Don't change the whole A tag, only its span if it exists
+                             const span = el.querySelector('span');
+                             if(span) span.innerHTML = translations[lang][key];
+                        } else {
+                             el.innerHTML = translations[lang][key];
+                        }
                     }
                 }
             });
@@ -653,4 +683,3 @@
     </script>
 </body>
 </html>
-
