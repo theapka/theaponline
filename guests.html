@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการรายชื่อแขก - Theap Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        body { font-family: 'Kantumruy Pro', sans-serif; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        .mobile-nav-item.active { color: #ec4899; }
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen">
+
+    <header class="bg-white dark:bg-gray-800/80 backdrop-blur-sm shadow-sm sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+             <a href="my-cards.html" class="text-gray-600 dark:text-gray-300 hover:text-pink-500">
+                <i class="fas fa-arrow-left text-xl"></i>
+            </a>
+            <h1 class="text-lg font-bold" data-lang-key="page_title">បញ្ជីភ្ញៀវកិត្តិយស</h1>
+            <div class="w-6"></div> </div>
+    </header>
+
+    <main class="container mx-auto p-4 pb-24">
+        <div id="loader" class="text-center p-10">
+            <i class="fas fa-spinner fa-spin text-4xl text-pink-500"></i>
+        </div>
+
+        <div id="content-container" class="hidden">
+            <div class="flex space-x-2 mb-4">
+                <button id="create-qr-btn" class="bg-white dark:bg-gray-800 px-3 py-2 rounded-lg shadow-sm flex items-center justify-center text-sm font-semibold text-gray-700 dark:text-gray-200 flex-1">
+                    <i class="fas fa-qrcode mr-2"></i> <span data-lang-key="create_qr">បង្កើត QR</span>
+                </button>
+                 <div class="relative flex-1">
+                    <button id="excel-dropdown-btn" class="w-full bg-white dark:bg-gray-800 px-3 py-2 rounded-lg shadow-sm flex items-center justify-center text-sm font-semibold text-gray-700 dark:text-gray-200">
+                        <i class="fas fa-file-excel mr-2"></i> <span>Excel</span> <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    <div id="excel-dropdown" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 hidden z-10">
+                        <a href="#" id="download-excel-btn" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                           <i class="fas fa-download fa-fw mr-2 text-gray-400"></i> <span data-lang-key="download_excel">ទាញយក</span>
+                        </a>
+                        <a href="#" id="import-excel-btn" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                           <i class="fas fa-upload fa-fw mr-2 text-gray-400"></i> <span data-lang-key="import_excel">នាំ​ចូល</span>
+                        </a>
+                    </div>
+                </div>
+                 <button id="pdf-btn" class="bg-white dark:bg-gray-800 px-3 py-2 rounded-lg shadow-sm flex items-center justify-center text-sm font-semibold text-gray-700 dark:text-gray-200 flex-1">
+                    <i class="fas fa-file-pdf mr-2"></i> <span data-lang-key="pdf">PDF</span>
+                </button>
+                <input type="file" id="import-file-input" class="hidden" accept=".xlsx, .xls">
+            </div>
+
+            <div class="mb-4 relative">
+                <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2 border dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg" placeholder="ស្វែងរក...">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            </div>
+             <button id="filter-btn" class="w-full bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm flex items-center justify-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-4">
+                <i class="fas fa-filter mr-2"></i> <span data-lang-key="clean_filter">ស្អាត</span>
+            </button>
+
+
+            <div id="guest-list-container" class="space-y-3">
+                <div id="empty-state" class="text-center py-16 text-gray-500 hidden">
+                    <i class="fas fa-users text-5xl mb-4"></i>
+                    <p data-lang-key="no_data">គ្មានទិន្នន័យ</p>
+                </div>
+                </div>
+        </div>
+    </main>
+
+    <div class="fixed bottom-24 right-4 space-y-3 z-30">
+        <button class="bg-white dark:bg-gray-700 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-600 dark:text-gray-200">
+            <i class="fas fa-qrcode"></i>
+        </button>
+        <button id="add-guest-fab" class="bg-pink-500 w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white">
+            <i class="fas fa-plus text-2xl"></i>
+        </button>
+    </div>
+
+    <div id="guest-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 hidden modal-overlay">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md max-h-full overflow-y-auto modal-content translate-y-full">
+            <div class="p-5 border-b dark:border-gray-700 text-center relative">
+                <h2 id="modal-title" class="text-lg font-bold" data-lang-key="add_guest_title">បន្ថែមភ្ញៀវ</h2>
+                <p class="text-sm text-gray-500" data-lang-key="no_data_subtitle">គ្មានទិន្នន័យ</p>
+                <button id="close-modal-btn" class="absolute top-3 right-4 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="guest-form" class="p-6 space-y-4">
+                <input type="hidden" id="guest-id">
+                <div>
+                    <label for="guest-name" class="text-sm font-medium" data-lang-key="form_name">ឈ្មោះ <span class="text-red-500">*</span></label>
+                    <input type="text" id="guest-name" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 shadow-sm focus:border-pink-500 focus:ring-pink-500" required>
+                </div>
+                <div>
+                    <label for="guest-phone" class="text-sm font-medium" data-lang-key="form_phone">លេខទូរស័ព្ទ</label>
+                    <input type="tel" id="guest-phone" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 shadow-sm focus:border-pink-500 focus:ring-pink-500">
+                </div>
+                 <div>
+                    <label for="guest-role" class="text-sm font-medium" data-lang-key="form_role">មុខងារ</label>
+                    <input type="text" id="guest-role" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 shadow-sm focus:border-pink-500 focus:ring-pink-500">
+                </div>
+                <div>
+                    <label for="guest-note" class="text-sm font-medium" data-lang-key="form_note">កំណត់ចំណាំ</label>
+                    <textarea id="guest-note" rows="3" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 shadow-sm focus:border-pink-500 focus:ring-pink-500" placeholder="ឧទាហរណ៍៖ លេខតុ, កន្លែងអង្គុយ"></textarea>
+                </div>
+                 <div>
+                    <label for="guest-tags" class="text-sm font-medium" data-lang-key="form_tags">ស្លាក (tags)</label>
+                    <select id="guest-tags" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 shadow-sm focus:border-pink-500 focus:ring-pink-500">
+                        <option>ជ្រើសរើសស្លាកក្រុម</option>
+                        </select>
+                </div>
+                <div class="flex space-x-2">
+                    <button type="button" class="w-full text-sm py-2 px-3 bg-gray-200 dark:bg-gray-700 rounded-md flex items-center justify-center"><i class="fas fa-cog mr-2"></i> <span data-lang-key="manage_tags">គ្រប់គ្រងស្លាក</span></button>
+                    <button type="button" class="w-full text-sm py-2 px-3 bg-pink-600 text-white rounded-md flex items-center justify-center"><i class="fas fa-plus mr-2"></i> <span data-lang-key="create_tag">បង្កើតស្លាកថ្មី</span></button>
+                </div>
+                <div class="flex justify-between items-center bg-gray-100 dark:bg-gray-700/50 p-3 rounded-lg">
+                    <span class="font-medium" data-lang-key="form_status">ស្ថានភាព</span>
+                     <div class="flex items-center space-x-2 text-sm">
+                        <span data-lang-key="status_off">បិទ</span>
+                        <label for="guest-status" class="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" id="guest-status" class="sr-only peer" checked>
+                          <div class="w-11 h-6 bg-gray-200 dark:bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
+                        </label>
+                        <span data-lang-key="status_on">បង្ហាញ</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-4">
+                    <button type="button" id="cancel-btn" class="w-full py-3 bg-gray-200 dark:bg-gray-600 rounded-lg font-bold" data-lang-key="cancel">បោះបង់</button>
+                    <button type="submit" id="save-btn" class="w-full py-3 bg-pink-600 text-white rounded-lg font-bold flex items-center justify-center">
+                        <span id="save-btn-text" data-lang-key="save">រក្សាទុក</span>
+                        <i id="save-spinner" class="fas fa-spinner spinner ml-2 hidden"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <nav id="mobile-nav" class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t dark:border-gray-700 shadow-lg z-20">
+        <div class="flex justify-around items-center h-16">
+            <a href="my-cards.html" data-tab="general" class="mobile-nav-item flex flex-col items-center justify-center px-2">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="nav_home">ទូទៅ</span>
+            </a>
+            <a href="guests.html" data-tab="guests" class="mobile-nav-item active flex flex-col items-center justify-center px-2">
+                <i class="fas fa-address-card text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="nav_guests">ភ្ញៀវកត្តិយស</span>
+            </a>
+            <button data-tab="gifts" class="mobile-nav-item flex flex-col items-center justify-center px-2">
+                <i class="fas fa-envelope text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="nav_gifts">ចំណងដៃ</span>
+            </button>
+            <a id="your-card-link" href="#" target="_blank" rel="noopener noreferrer" class="mobile-nav-item flex flex-col items-center justify-center px-2">
+                <i class="fas fa-book-open text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="nav_your_card">ធៀបអ្នក</span>
+            </a>
+            <a href="index.html#gallery" class="mobile-nav-item flex flex-col items-center justify-center px-2">
+                <i class="fas fa-images text-xl"></i>
+                <span class="text-xs mt-1" data-lang-key="nav_templates">គំរូរធៀប</span>
+            </a>
+        </div>
+    </nav>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { 
+            getFirestore, doc, onSnapshot, collection, addDoc, updateDoc, deleteDoc, 
+            serverTimestamp, query, orderBy, writeBatch
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // --- Config ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyBuE7NiFGrSg8FdKq-E_I0ygle3HetUhsw",
+          authDomain: "theap-online-website.firebaseapp.com",
+          projectId: "theap-online-website",
+          storageBucket: "theap-online-website.appspot.com",
+          messagingSenderId: "460601895037",
+          appId: "1:460601895037:web:e40ea194c9d801934e2914"
+        };
+        
+        // --- Firebase Init ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- UI Elements ---
+        const loader = document.getElementById('loader');
+        const contentContainer = document.getElementById('content-container');
+        const guestListContainer = document.getElementById('guest-list-container');
+        const emptyState = document.getElementById('empty-state');
+        const searchInput = document.getElementById('search-input');
+        const guestModal = document.getElementById('guest-modal');
+        const guestForm = document.getElementById('guest-form');
+        const modalTitle = document.getElementById('modal-title');
+        const addGuestFab = document.getElementById('add-guest-fab');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const excelDropdownBtn = document.getElementById('excel-dropdown-btn');
+        const excelDropdown = document.getElementById('excel-dropdown');
+        const importExcelBtn = document.getElementById('import-excel-btn');
+        const downloadExcelBtn = document.getElementById('download-excel-btn');
+        const importFileInput = document.getElementById('import-file-input');
+        const pdfBtn = document.getElementById('pdf-btn');
+
+        let currentUser = null;
+        let guestsData = []; // Cache for guest data
+
+        // --- Modal Logic ---
+        function openModal(guest = null) {
+            guestForm.reset();
+            document.getElementById('guest-id').value = '';
+            if (guest) {
+                modalTitle.textContent = 'កែសម្រួលភ្ញៀវ';
+                document.getElementById('guest-id').value = guest.id;
+                document.getElementById('guest-name').value = guest.name;
+                document.getElementById('guest-phone').value = guest.phone || '';
+                document.getElementById('guest-role').value = guest.role || '';
+                document.getElementById('guest-note').value = guest.note || '';
+                // Set the correct tag in the dropdown
+                document.getElementById('guest-tags').value = guest.tags || '';
+                document.getElementById('guest-status').checked = guest.status === 'active';
+            } else {
+                modalTitle.textContent = 'បន្ថែមភ្ញៀវថ្មី';
+            }
+            guestModal.classList.remove('hidden');
+            setTimeout(() => {
+                guestModal.classList.remove('opacity-0');
+                guestModal.querySelector('.modal-content').classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function closeModal() {
+            guestModal.classList.add('opacity-0');
+            guestModal.querySelector('.modal-content').classList.add('translate-y-full');
+            setTimeout(() => {
+                guestModal.classList.add('hidden');
+            }, 300);
+        }
+
+        addGuestFab.addEventListener('click', () => openModal());
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // --- Excel Dropdown Logic ---
+        excelDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            excelDropdown.classList.toggle('hidden');
+        });
+        document.addEventListener('click', (e) => {
+            if (!excelDropdownBtn.contains(e.target)) {
+                excelDropdown.classList.add('hidden');
+            }
+        });
+
+        // --- Render Guest List ---
+        function renderGuestList(guests) {
+            guestListContainer.innerHTML = '';
+            if (guests.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                guests.forEach(guest => {
+                    const guestCard = `
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm flex items-center justify-between" data-guest-id="${guest.id}">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-pink-100 dark:bg-pink-900 flex items-center justify-center mr-4">
+                                    <span class="font-bold text-pink-600 dark:text-pink-300">${guest.name.charAt(0).toUpperCase()}</span>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-800 dark:text-gray-100">${guest.name}</p>
+                                    <p class="text-sm text-gray-500">${guest.role || 'N/A'}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="edit-btn w-8 h-8 flex items-center justify-center text-gray-500 hover:text-blue-500"><i class="fas fa-pen"></i></button>
+                                <button class="delete-btn w-8 h-8 flex items-center justify-center text-gray-500 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                    guestListContainer.insertAdjacentHTML('beforeend', guestCard);
+                });
+            }
+        }
+        
+        // --- Firebase Data Logic ---
+        // --- START: UPDATED CODE BLOCK ---
+        function listenToGuests(userId) {
+            const guestsColRef = collection(db, "weddingInvitations", userId, "guests");
+            
+            // ចំណាំ៖ ការเรียงลำดับข้อมูลនេះទាមទារឲ្យមាន 'Index' នៅក្នុង Firestore។
+            // ប្រសិនបើអ្នកឃើញ Error នៅក្នុង Console អំពី Index ដែលបាត់ សូមចុចលើ Link ដែលបង្ហាញនៅក្នុង Error នោះដើម្បីสร้างវា។
+            // ជាទូទៅ អ្នកនឹងត្រូវបង្កើត Index សម្រាប់ collection 'guests' នៅលើ field 'createdAt' ដោយเรียงลำดับពីថ្មីទៅចាស់ (Descending)។
+            const q = query(guestsColRef, orderBy("createdAt", "desc"));
+            
+            onSnapshot(q, (snapshot) => {
+                guestsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderGuestList(guestsData);
+                loader.classList.add('hidden');
+                contentContainer.classList.remove('hidden');
+            }, (error) => {
+                console.error("Error fetching guests:", error);
+                loader.classList.add('hidden');
+                 // You could show an error message to the user here
+            });
+        }
+        // --- END: UPDATED CODE BLOCK ---
+
+        guestForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.disabled = true;
+            document.getElementById('save-btn-text').classList.add('hidden');
+            document.getElementById('save-spinner').classList.remove('hidden');
+
+            // Collect data from the form
+            const guestData = {
+                name: document.getElementById('guest-name').value,
+                phone: document.getElementById('guest-phone').value,
+                role: document.getElementById('guest-role').value,
+                note: document.getElementById('guest-note').value,
+                status: document.getElementById('guest-status').checked ? 'active' : 'inactive',
+                tags: document.getElementById('guest-tags').value
+            };
+
+            const guestId = document.getElementById('guest-id').value;
+
+            try {
+                if (guestId) { // Case: Editing an existing guest
+                    guestData.updatedAt = serverTimestamp();
+                    const guestDocRef = doc(db, "weddingInvitations", currentUser.uid, "guests", guestId);
+                    await updateDoc(guestDocRef, guestData);
+                } else { // Case: Adding a new guest
+                    guestData.createdAt = serverTimestamp();
+                    guestData.updatedAt = serverTimestamp();
+                    const guestsColRef = collection(db, "weddingInvitations", currentUser.uid, "guests");
+                    await addDoc(guestsColRef, guestData);
+                }
+                closeModal();
+            } catch (error) {
+                console.error("Error saving guest:", error);
+                alert('An error occurred while saving guest data. Please try again.');
+            } finally {
+                saveBtn.disabled = false;
+                document.getElementById('save-btn-text').classList.remove('hidden');
+                document.getElementById('save-spinner').classList.add('hidden');
+            }
+        });
+        
+        guestListContainer.addEventListener('click', async (e) => {
+            const guestCard = e.target.closest('[data-guest-id]');
+            if (!guestCard) return;
+
+            const guestId = guestCard.dataset.guestId;
+            const guest = guestsData.find(g => g.id === guestId);
+
+            // Edit button
+            if (e.target.closest('.edit-btn')) {
+                openModal(guest);
+            }
+
+            // Delete button
+            if (e.target.closest('.delete-btn')) {
+                if (confirm(`តើអ្នកពិតជាចង់លុប "${guest.name}" មែនទេ?`)) {
+                    try {
+                        const guestDocRef = doc(db, "weddingInvitations", currentUser.uid, "guests", guestId);
+                        await deleteDoc(guestDocRef);
+                    } catch (error) {
+                         console.error("Error deleting guest:", error);
+                         alert('Error deleting guest.');
+                    }
+                }
+            }
+        });
+
+
+        // --- Search Logic ---
+        searchInput.addEventListener('keyup', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredGuests = guestsData.filter(guest => 
+                guest.name.toLowerCase().includes(searchTerm) ||
+                (guest.role && guest.role.toLowerCase().includes(searchTerm))
+            );
+            renderGuestList(filteredGuests);
+        });
+        
+        // --- Excel & PDF Logic ---
+        downloadExcelBtn.addEventListener('click', () => {
+            if (guestsData.length === 0) {
+                alert("No guest data to export.");
+                return;
+            }
+            const worksheet = XLSX.utils.json_to_sheet(guestsData.map(({id, createdAt, ...rest}) => rest)); // Exclude id and createdAt
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Guests");
+            XLSX.writeFile(workbook, "guest_list.xlsx");
+            excelDropdown.classList.add('hidden');
+        });
+
+        importExcelBtn.addEventListener('click', () => {
+            importFileInput.click();
+            excelDropdown.classList.add('hidden');
+        });
+
+        importFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                try {
+                    const data = new Uint8Array(event.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const json = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (json.length > 0 && confirm(`Found ${json.length} guests. Do you want to import them?`)) {
+                        const batch = writeBatch(db);
+                        const guestsColRef = collection(db, "weddingInvitations", currentUser.uid, "guests");
+                        
+                        json.forEach(row => {
+                            const newGuestRef = doc(guestsColRef);
+                            batch.set(newGuestRef, {
+                                name: row.name || 'N/A',
+                                phone: row.phone || '',
+                                role: row.role || '',
+                                note: row.note || '',
+                                status: row.status || 'active',
+                                createdAt: serverTimestamp()
+                            });
+                        });
+                        await batch.commit();
+                        alert("Guests imported successfully!");
+                    }
+                } catch (error) {
+                    console.error("Error importing file:", error);
+                    alert("Failed to import Excel file. Please check the format.");
+                } finally {
+                    importFileInput.value = ''; // Reset input
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        pdfBtn.addEventListener('click', () => {
+            if (guestsData.length === 0) {
+                alert("No guest data to export.");
+                return;
+            }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.autoTable({
+                head: [['Name', 'Phone', 'Role', 'Note', 'Status']],
+                body: guestsData.map(g => [g.name, g.phone, g.role, g.note, g.status]),
+            })
+
+            doc.save('guest_list.pdf');
+        });
+
+
+        // --- Auth & Init ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                const yourCardLink = document.getElementById('your-card-link');
+                if (yourCardLink) yourCardLink.href = `card.html?id=${user.uid}`;
+                listenToGuests(user.uid);
+            } else {
+                window.location.href = new URL('index.html', window.location.href).href;
+            }
+        });
+
+    </script>
+</body>
+</html>
