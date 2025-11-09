@@ -276,7 +276,7 @@
                  <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center">
                      <i class="fas fa-camera-retro text-pink-500 text-4xl mb-4"></i>
                      <h3 class="text-xl font-semibold mb-2" data-lang-key="feature_3_title">វិចិត្រសាលរូបភាព</h3>
-                     <p class="text-gray-600 dark:text-gray-400" data-lang-key="feature_3_desc">ចែករំលែករូបថត Pre-wedding และអនុស្សាវរីយ៍ផ្សេងៗជាមួយភ្ញៀវរបស់អ្នក។</p>
+                     <p class="text-gray-600 dark:text-gray-400" data-lang-key="feature_3_desc">ចែករំលែករូបថត Pre-wedding និងអនុស្សាវរីយ៍ផ្សេងៗជាមួយភ្ញៀវរបស់អ្នក។</p>
                  </div>
                  <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center">
                      <i class="fas fa-ban text-pink-500 text-4xl mb-4"></i>
@@ -352,6 +352,29 @@
                         <span data-lang-key="login_no_account">មិនទាន់មានគណនី?</span>
                         <a href="#" class="text-pink-500 hover:underline" data-page="register" data-lang-key="register_link">បង្កើតគណនី</a>
                     </p>
+
+                    <!-- START: Social Login Buttons -->
+                    <div class="my-6 flex items-center">
+                        <div class="border-t border-gray-200 dark:border-gray-600 flex-grow"></div>
+                        <span class="px-3 text-gray-500 text-sm" data-lang-key="social_login_or">ឬ</span>
+                        <div class="border-t border-gray-200 dark:border-gray-600 flex-grow"></div>
+                    </div>
+                    <div class="space-y-4">
+                        <button type="button" id="google-login-btn" class="w-full flex items-center justify-center py-2.5 px-4 rounded-full font-semibold border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition text-gray-700 dark:text-gray-200">
+                            <svg class="w-5 h-5 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                                <path fill="#4285F4" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path>
+                                <path fill="#FBBC05" d="M6.306 14.691c-2.316 4.908-2.316 10.71 0 15.618L.649 35.84C-2.167 29.602-2.167 22.398.649 16.16z"></path>
+                                <path fill="#EA4335" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-5.657-5.657C30.01 35.031 27.17 36 24 36c-5.223 0-9.657-3.343-11.303-8H.649c2.952 8.358 10.73 14 19.351 14l4-2z"></path>
+                                <path fill="#34A853" d="M24 12c3.179 0 6.096 1.099 8.411 3.284l5.657-5.657C36.002 6.072 30.27 4 24 4c-8.621 0-16.399 5.642-19.351 14L6.306 22H12.697C14.343 15.343 18.777 12 24 12z"></path>
+                            </svg>
+                            <span data-lang-key="google_login_btn">ចូលជាមួយ Google</span>
+                        </button>
+                        <button type="button" id="facebook-login-btn" class="w-full flex items-center justify-center py-2.5 px-4 rounded-full font-semibold bg-blue-600 text-white hover:bg-blue-700 transition">
+                            <i class="fab fa-facebook-f w-5 h-5 mr-3 flex-shrink-0 text-center"></i>
+                            <span data-lang-key="facebook_login_btn">ចូលជាមួយ Facebook</span>
+                        </button>
+                    </div>
+                    <!-- END: Social Login Buttons -->
                 </form>
             </div>
         </section>
@@ -385,6 +408,29 @@
                         <span data-lang-key="register_has_account">មានគណនីរួចហើយ?</span>
                         <a href="#" class="text-pink-500 hover:underline" data-page="login" data-lang-key="login_link">ចូលគណនី</a>
                     </p>
+                    
+                    <!-- START: Social Login Buttons -->
+                    <div class="my-6 flex items-center">
+                        <div class="border-t border-gray-200 dark:border-gray-600 flex-grow"></div>
+                        <span class="px-3 text-gray-500 text-sm" data-lang-key="social_login_or">ឬ</span>
+                        <div class="border-t border-gray-200 dark:border-gray-600 flex-grow"></div>
+                    </div>
+                    <div class="space-y-4">
+                        <button type="button" id="google-register-btn" class="w-full flex items-center justify-center py-2.5 px-4 rounded-full font-semibold border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition text-gray-700 dark:text-gray-200">
+                            <svg class="w-5 h-5 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                                <path fill="#4285F4" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path>
+                                <path fill="#FBBC05" d="M6.306 14.691c-2.316 4.908-2.316 10.71 0 15.618L.649 35.84C-2.167 29.602-2.167 22.398.649 16.16z"></path>
+                                <path fill="#EA4335" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-5.657-5.657C30.01 35.031 27.17 36 24 36c-5.223 0-9.657-3.343-11.303-8H.649c2.952 8.358 10.73 14 19.351 14l4-2z"></path>
+                                <path fill="#34A853" d="M24 12c3.179 0 6.096 1.099 8.411 3.284l5.657-5.657C36.002 6.072 30.27 4 24 4c-8.621 0-16.399 5.642-19.351 14L6.306 22H12.697C14.343 15.343 18.777 12 24 12z"></path>
+                            </svg>
+                            <span data-lang-key="google_login_btn">ចុះឈ្មោះជាមួយ Google</span>
+                        </button>
+                        <button type="button" id="facebook-register-btn" class="w-full flex items-center justify-center py-2.5 px-4 rounded-full font-semibold bg-blue-600 text-white hover:bg-blue-700 transition">
+                            <i class="fab fa-facebook-f w-5 h-5 mr-3 flex-shrink-0 text-center"></i>
+                            <span data-lang-key="facebook_login_btn">ចុះឈ្មោះជាមួយ Facebook</span>
+                        </button>
+                    </div>
+                    <!-- END: Social Login Buttons -->
                 </form>
             </div>
         </section>
@@ -444,7 +490,12 @@
             signInWithEmailAndPassword,
             onAuthStateChanged,
             signOut,
-            updateProfile
+            updateProfile,
+            // START: Added Imports
+            GoogleAuthProvider,
+            FacebookAuthProvider,
+            signInWithPopup
+            // END: Added Imports
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         const firebaseConfig = {
@@ -458,6 +509,12 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        
+        // START: Added Providers
+        const googleProvider = new GoogleAuthProvider();
+        const facebookProvider = new FacebookAuthProvider();
+        // END: Added Providers
+
 
         // --- DATA FOR TRANSLATION ---
         const translations = {
@@ -465,11 +522,23 @@
                 page_title: 'គេហទំព័រអាពាហ៍ពិពាហ៍ - ធៀប អនឡាញ', nav_brand: 'ធៀប អនឡាញ', nav_home: 'ទំព័រដើម', nav_features: 'មុខងារ', nav_templates: 'គំរូធៀប', nav_contact: 'ទាក់ទងយើង', create_card_btn: 'បង្កើតគណនី', hero_tagline: 'ធៀប អនឡាញ - អ្នកបង្កើតធៀបការ', hero_title: 'រៀបចំគម្រោងអាពាហ៍ពិពាហ៍ក្នុងក្តីស្រមៃអ្នក', hero_subtitle: 'បង្កើតនិងរៀបចំធៀបការឌីជីថល គ្រប់គ្រងបញ្ជីភ្ញៀវ និងចែករំលែករឿងរ៉ាវស្នេហារបស់អ្នកបានយ៉ាងងាយស្រួល។', hero_cta: 'ចាប់ផ្តើមឥឡូវនេះ', stat_1_val: '២០០០+', stat_1_label: 'គូស្វាមីភរិយា', stat_2_val: '២៤/៧', stat_2_label: 'ការគាំទ្រ', stat_3_val: '៩៩%', stat_3_label: 'ការពេញចិត្ត', features_title: 'មុខងារពិសេសរបស់យើង', feature_1_title: 'ជម្រើសគំរូច្រើន', feature_1_desc: 'បង្កើតធៀបការដ៏ស្រស់ស្អាត និងអាចប្ដូរតាមបំណងបាន។', feature_2_title: 'ការគ្រប់គ្រងភ្ញៀវ', feature_2_desc: 'តាមដានការឆ្លើយតបរបស់ភ្ញៀវ និងគ្រប់គ្រងបញ្ជីឈ្មោះបានយ៉ាងងាយស្រួល។', feature_3_title: 'វិចិត្រសាលរូបភាព', feature_3_desc: 'ចែករំលែករូបថត Pre-wedding និងអនុស្សាវរីយ៍ផ្សេងៗជាមួយភ្ញៀវរបស់អ្នក។', feature_4_title: 'គ្មានការផ្សាយពាណិជ្ជកម្ម', feature_4_desc: 'ធានានូវបទពិសោធន៍ដ៏ល្អឥតខ្ចោះសម្រាប់ភ្ញៀវរបស់អ្នក។', feature_5_title: 'ការរាប់ថយក្រោយ', feature_5_desc: 'បង្ហាញម៉ោងរាប់ថយក្រោយរហូតដល់ថ្ងៃពិសេសរបស់អ្នក។', feature_6_title: 'ផែនទី', feature_6_desc: 'ភ្ជាប់ទីតាំងពិធីរបស់អ្នកជាមួយ Google Maps សម្រាប់ភ្ញៀវ។', templates_title: 'គំរូធៀបអញ្ជើញ', contact_title: 'ទាក់ទងមកពួកយើង', form_name: 'ឈ្មោះ', form_email: 'អ៊ីមែល', form_message: 'សារ', form_send: 'ផ្ញើសារ', login_title: 'ចូលគណនី', login_btn: 'ចូលគណនី', form_password: 'ពាក្យសម្ងាត់', login_no_account: 'មិនទាន់មានគណនី?', register_link: 'បង្កើតគណនី', register_title: 'បង្កើតគណនីថ្មី', form_confirm_password: 'បញ្ជាក់ពាក្យសម្ងាត់', register_btn: 'បង្កើតគណនី', register_has_account: 'មានគណនីរួចហើយ?', login_link: 'ចូលគណនី', footer_desc: 'វេទិកាបង្កើតធៀបការឌីជីថលឈានមុខគេនៅកម្ពុជា។', footer_links: 'តំណភ្ជាប់រហ័ស', footer_social: 'ទំនាក់ទំនង & តាមដានពួកយើង', footer_text: '&copy; 2025 ធៀប អនឡាញ. រក្សាសិទ្ធិគ្រប់យ៉ាង។', my_cards_link: 'ធៀបរបស់ខ្ញុំ', edit_card_link: 'កែសម្រួលធៀប', logout_btn: 'ចាកចេញ',
                 error_pass_length: 'ពាក្យសម្ងាត់ត្រូវមានយ៉ាងតិច ៦ តួអក្សរ។', error_pass_mismatch: 'ពាក្យសម្ងាត់មិនត្រូវគ្នាទេ។', success_register: 'ការបង្កើតគណនីបានជោគជ័យ!', error_email_in_use: 'អ៊ីមែលនេះត្រូវបានប្រើប្រាស់រួចហើយ។', error_generic: 'មានបញ្ហា។ សូមព្យាយាមម្តងទៀត។', error_login_failed: 'អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ។',
                 theme_toggle_text: 'ប្តូរការបង្ហាញ', lang_toggle_text_km: 'ប្តូរទៅ EN', lang_toggle_text_en: 'Switch to KM', create_card_now_btn: 'បង្កើតធៀបឥឡូវនេះ',
+                // START: Added Translations
+                social_login_or: 'ឬ',
+                google_login_btn: 'ចូលជាមួយ Google',
+                facebook_login_btn: 'ចូលជាមួយ Facebook',
+                error_social_account_exists: 'គណនីមានរួចហើយជាមួយវិធីផ្ទៀងផ្ទាត់ផ្សេង។'
+                // END: Added Translations
             },
             en: {
                 page_title: 'Wedding Website - Theap Online', nav_brand: 'Theap Online', nav_home: 'Home', nav_features: 'Features', nav_templates: 'Card Templates', nav_contact: 'Contact Us', create_card_btn: 'Create Account', hero_tagline: 'Theap Online - Invitation Card Maker', hero_title: 'Plan Your Dream Wedding', hero_subtitle: 'Easily create digital invitations, manage your guest list, and share your love story.', hero_cta: 'Get Started Now', stat_1_val: '2000+', stat_1_label: 'Couples', stat_2_val: '24/7', stat_2_label: 'Support', stat_3_val: '99%', stat_3_label: 'Satisfaction', features_title: 'Our Amazing Features', feature_1_title: 'Multiple Templates', feature_1_desc: 'Create beautiful and customizable digital wedding invitations.', feature_2_title: 'Guest Management', feature_2_desc: 'Track RSVPs and manage your guest list effortlessly.', feature_3_title: 'Photo Gallery', feature_3_desc: 'Share your pre-wedding photos and memories with your guests.', feature_4_title: 'Ad-Free', feature_4_desc: 'Ensure a clean and premium experience for all your guests.', feature_5_title: 'Countdown Timer', feature_5_desc: 'Display a countdown timer to your special day.', feature_6_title: 'Event Maps', feature_6_desc: 'Integrate Google Maps for your ceremony and reception venues.', templates_title: 'Invitation Templates', contact_title: 'Contact Us', form_name: 'Name', form_email: 'Email', form_message: 'Message', form_send: 'Send Message', login_title: 'Login', login_btn: 'Login', form_password: 'Password', login_no_account: "Don't have an account?", register_link: 'Register', register_title: 'Create a New Account', form_confirm_password: 'Confirm Password', register_btn: 'Register', register_has_account: 'Already have an account?', login_link: 'Login', footer_desc: 'The leading digital wedding invitation platform in Cambodia.', footer_links: 'Quick Links', footer_social: 'Contact & Follow Us', footer_text: '&copy; 2025 Theap Online. All rights reserved.', my_cards_link: 'My Cards', edit_card_link: 'Edit Card', logout_btn: 'Logout',
                 error_pass_length: 'Password must be at least 6 characters long.', error_pass_mismatch: 'Passwords do not match.', success_register: 'Account created successfully!', error_email_in_use: 'This email is already in use.', error_generic: 'An error occurred. Please try again.', error_login_failed: 'Invalid email or password.',
                 theme_toggle_text: 'Toggle Theme', lang_toggle_text_km: 'Change to EN', lang_toggle_text_en: 'Switch to KM', create_card_now_btn: 'Create Card Now',
+                // START: Added Translations
+                social_login_or: 'or',
+                google_login_btn: 'Continue with Google',
+                facebook_login_btn: 'Continue with Facebook',
+                error_social_account_exists: 'An account already exists with a different credential.'
+                // END: Added Translations
             }
         };
 
@@ -653,6 +722,70 @@
                     .finally(() => { toggleSpinner(loginForm, false); });
             });
         }
+        
+        // --- START: ការណែនាំអំពីការកំណត់រចនាសម្ព័ន្ធ FIREBASE ---
+        // កូដខាងក្រោមនេះត្រឹមត្រូវហើយ ប៉ុន្តែវានឹងមិនដំណើរការទេ
+        // លុះត្រាតែអ្នកអនុវត្តជំហានទាំងនេះនៅក្នុងគម្រោង Firebase របស់អ្នក៖
+        //
+        // 1. ចូលទៅកាន់ Firebase Console (https://console.firebase.google.com/)
+        // 2. ជ្រើសរើសគម្រោងរបស់អ្នក (Project) ដែលមាន ID: "theap-online-website"
+        // 3. ទៅកាន់ផ្នែក "Authentication"
+        // 4. ចុចលើផ្ទាំង "Sign-in method"
+        //
+        // សម្រាប់ GOOGLE:
+        //  - ចុច "Google" ពីក្នុងបញ្ជី
+        //  - បើក (Enable) វា
+        //  - ជ្រើសរើសអ៊ីមែលសម្រាប់គាំទ្រ (Project support email)
+        //  - ចុច "Save"
+        //
+        // សម្រាប់ FACEBOOK:
+        //  - ចុច "Facebook" ពីក្នុងបញ្ជី
+        //  - បើក (Enable) វា
+        //  - អ្នកនឹងត្រូវការ "App ID" និង "App Secret" ពី Facebook for Developers
+        //  - ចូលទៅកាន់ (https://developers.facebook.com/) បង្កើត App ថ្មី
+        //  - នៅក្នុង Facebook App -> Settings -> Basic: បញ្ចូល App ID និង App Secret របស់អ្នក
+        //  - នៅក្នុង Facebook App -> Products -> Facebook Login -> Settings:
+        //  - បញ្ចូល "Valid OAuth Redirect URI" ដែល Firebase ផ្តល់ឱ្យអ្នក (វានឹងបង្ហាញនៅក្នុង Firebase Console)
+        //  - ចម្លង App ID និង App Secret យកមកដាក់ក្នុង Firebase Console
+        //  - ចុច "Save"
+        //
+        // បន្ទាប់ពីធ្វើបែបនេះ ការ Login នឹងដំណើរការ។
+        // --- END: ចប់ការណែនាំ ---
+
+        // START: Social Login Logic
+        const showSocialAuthError = (error, page) => {
+            const errorDivId = page === 'login' ? 'login-error' : 'register-error';
+            const errorDiv = document.getElementById(errorDivId);
+            let messageKey = 'error_generic';
+            if (error.code === 'auth/account-exists-with-different-credential') {
+                messageKey = 'error_social_account_exists';
+            }
+            errorDiv.textContent = translations[currentLang][messageKey] || error.message;
+            errorDiv.classList.remove('hidden');
+        };
+
+        const handleSocialLogin = (provider, page) => {
+            // Clear previous errors
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('register-error').classList.add('hidden');
+
+            signInWithPopup(auth, provider)
+                .then(() => {
+                    window.location.href = 'my-cards.html'; // Redirect on success
+                })
+                .catch((error) => {
+                    console.error("Social Login Error:", error);
+                    showSocialAuthError(error, page);
+                });
+        };
+
+        // Add Listeners for Social Buttons
+        document.getElementById('google-login-btn').addEventListener('click', () => handleSocialLogin(googleProvider, 'login'));
+        document.getElementById('facebook-login-btn').addEventListener('click', () => handleSocialLogin(facebookProvider, 'login'));
+        
+        document.getElementById('google-register-btn').addEventListener('click', () => handleSocialLogin(googleProvider, 'register'));
+        document.getElementById('facebook-register-btn').addEventListener('click', () => handleSocialLogin(facebookProvider, 'register'));
+        // END: Social Login Logic
 
         onAuthStateChanged(auth, (user) => {
             const loggedIn = !!user;
